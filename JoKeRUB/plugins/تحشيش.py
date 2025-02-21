@@ -260,7 +260,7 @@ async def permalink(mention):
 
 @l313l.on(admin_cmd(pattern="سيد(?:\s|$)([\s\S]*)"))
 async def permalink(mention):
-    await edit_or_reply(mention, f"سماحة السيد حسين علي مطور سورس الجوكر @jepthon")
+    await edit_or_reply(mention, f"سماحة السيد حسين علي مطور سورس الجوكر @Lx5x5")
 
 @l313l.on(admin_cmd(pattern="رفع ايجة(?:\s|$)([\s\S]*)"))
 async def permalink(mention):
