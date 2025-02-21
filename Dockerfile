@@ -1,4 +1,4 @@
-FROM jepthoniq/jepthon:slim-buster
+FROM Ksidhdnkddbos/jepthon:slim-buster
 
 #clonning repo 
 RUN git clone https://github.com/Ksidhdnkddbos/jepthon.git /root/JoKeRUB
