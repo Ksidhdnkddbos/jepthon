@@ -46,8 +46,8 @@ async def welcome_message(event):
                 await event.reply(welcome_message, parse_mode="html")
 
 @l313l.ar_cmd(
-    pattern="اضف ترحيب(?:\s|$)([\s\S]*)",
-    command=("اضف ترحيب", plugin_category),
+    pattern="ا ترحيب(?:\s|$)([\s\S]*)",
+    command=("ا ترحيب", plugin_category),
     info={
         "header": "لحفظ رسالة ترحيب جديدة",
         "description": "يحفظ الرسالة كرسالة ترحيب للمجموعة.",
@@ -67,8 +67,8 @@ async def save_welcome(event):
     await event.edit("**تم حفظ رسالة الترحيب بنجاح!**")
 
 @l313l.ar_cmd(
-    pattern="حذف_الترحيب$",
-    command=("حذف_الترحيب", plugin_category),
+    pattern="ح_الترحيب$",
+    command=("ح_الترحيب", plugin_category),
     info={
         "header": "لحذف رسالة الترحيب الحالية",
         "description": "يحذف رسالة الترحيب للمجموعة.",
