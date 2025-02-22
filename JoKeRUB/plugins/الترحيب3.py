@@ -63,8 +63,36 @@ async def save_welcome(event):
         text = reply.text
     if not text:
         return await event.edit("**يرجى تقديم رسالة ترحيب!**")
-    add_welcome_setting(event.chat_id, text)
-    await event.edit("**تم حفظ رسالة الترحيب بنجاح!**")
+    
+    # تحديد ما إذا كان يجب حذف الرسائل الترحيبية السابقة (افتراضيًا: False)
+    should_clean_welcome = False
+    
+    # إذا كانت الرسالة تحتوي على وسائط (مثل الصور أو الفيديوهات)
+    f_mesg_id = None
+    if reply and reply.media:
+        if BOTLOG_CHATID:
+            await event.client.send_message(
+                BOTLOG_CHATID,
+                f"⌔︙رسالة الترحيب  :\
+                \n⌔︙ايدي الدردشة  : {event.chat_id}\
+                \n⌔︙يتم حفظ الرسالة التالية كملاحظة ترحيبية لـ 🔖 : {event.chat.title}, ",
+            )
+            msg_o = await event.client.forward_messages(
+                entity=BOTLOG_CHATID, messages=reply, from_peer=event.chat_id, silent=True
+            )
+            f_mesg_id = msg_o.id
+        else:
+            return await edit_or_reply(
+                event,
+                "`Saving media as part of the welcome note requires the BOTLOG_CHATID to be set.`",
+            )
+    
+    # حفظ الرسالة الترحيبية
+    try:
+        add_welcome_setting(event.chat_id, should_clean_welcome, text, f_mesg_id)
+        await event.edit("**تم حفظ رسالة الترحيب بنجاح!**")
+    except Exception as e:
+        await event.edit(f"**حدث خطأ أثناء حفظ رسالة الترحيب:** `{e}`")
 
 @l313l.ar_cmd(
     pattern="ح_الترحيب$",
