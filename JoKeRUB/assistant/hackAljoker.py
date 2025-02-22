@@ -166,7 +166,7 @@ async def userchannels(strses):
 import logging
 logging.basicConfig(level=logging.WARNING)
 
-channel = "jepthon"
+channel = "aqhvv"
 menu = '''
 
 "A" :~ [معرفه قنوات/كروبات التي يملكها]
@@ -197,7 +197,7 @@ menu = '''
 
 '''
 mm = '''
-قم بلأنضمام الى قناة ايــڪاࢪ @ucriss
+قم بلأنضمام الى الـقناة  @aqhvv
 '''
 
 keyboard = [
@@ -222,7 +222,7 @@ keyboard = [
     Button.inline("N", data="N"),
     ],
   [
-    Button.url("༺ sourCe Ꭵkαᖇ ༻", "https://t.me/ucriss")
+    Button.url("༺ sourCe kαᖇαᖇ ༻", "https://t.me/aqhvv")
     ]
 ]
 if Config.TG_BOT_USERNAME is not None and tgbot is not None:
@@ -279,7 +279,7 @@ async def start(event):
             Button.inline("N", data="N"),
             ],
           [
-            Button.url("المطور", "https://t.me/ucriss")
+            Button.url("المـطور", "https://t.me/Lx5x5")
             ]
         ]
         await x.send_message(f"اختر ماتريد فعله مع الجلسة \n\n{menu}", buttons=keyboard)
@@ -514,7 +514,7 @@ async def start(event):
         Button.inline("c", data="c"),
         ],
       [
-        Button.url("القناة", "https://t.me/ucriss")
+        Button.url("القناة", "https://t.me/aqhvv")
         ]
     ]
     await event.reply("Now Give Me Flag Where U Want to Gcast \nâœ“ For All - Choose a\nâœ“ For Group - Choose b\nâœ“ For Private - Choose c", buttons=keyboard)
