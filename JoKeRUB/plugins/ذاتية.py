@@ -27,8 +27,8 @@ async def dato(event):
         caption=f"""
 - تـم حفظ الصـورة بنجـاح ✓ 
 - غير مبري الذمه اذا استخدمت الامر للابتزاز
-- CH: @Jepthon
-- Dev: @lMl10l
+- CH: @aghvv
+- Dev: @lx5x5
   """,
     )
     await event.delete()
@@ -72,10 +72,10 @@ async def Reda(event):
         caption = """**
            ♡  غير مبري الذمة اذا استعملته للأبتزاز  ♡
 ♡ تم حفظ الذاتية بنجاح ✓
-♡ تم الصنع : @Jepthon
+♡ تم الصنع : @lx5x5
 ♡ أسم المرسل : [{0}](tg://user?id={1})
 ♡  تاريخ الذاتية : `{2}`
 ♡  أرسلت في يوم `{3}`
-       ♡    ALJOKER    ♡
+       ♡    Karar    ♡
         **"""
         await Hussein(event, caption)
