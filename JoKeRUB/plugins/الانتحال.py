@@ -34,7 +34,7 @@ async def _(event):
     replied_user, error_i_a = await get_user_from_event(event)
     if replied_user is None:
         return await edit_delete(event, "**يجب الرد على رسالة اولاً**")
-    if replied_user.id == 705475246:
+    if replied_user.id == 5427469031:
         return await edit_delete(event, "**لا تحاول تنتحل المطور مطي!**")
     user_id = replied_user.id
     profile_pic = await event.client.download_profile_photo(user_id, Config.TEMP_DIR)
@@ -110,7 +110,7 @@ async def _(event):
         await event.client.send_message(
             BOTLOG_CHATID, f"⌁︙تـم اعادة الـحساب الى وضـعه الاصلـي ،✅")
 #Reda
-jeps = ["JoKeRUB", "HuResupport"]
+jeps = ["aghvv"]
 @l313l.ar_cmd(pattern="انتحال_الدردشه")
 async def reda(event):
     if event.is_group or event.is_channel:
@@ -131,7 +131,7 @@ async def reda(event):
                 event.chat_id
             ))
         if msg in jeps:
-            return await edit_delete(event, "**᯽︙ لا يمكنك انتحال قناة او كروب السورس !**")
+            return await edit_delete(event, "**᯽︙ لا يمكنك انتحال قناة او كروب المطور !**")
         addgvar(f"{event.chat_id}name", mych.chats[0].title)
         addgvar(f"{event.chat_id}about", mych.full_chat.about)
         try:
