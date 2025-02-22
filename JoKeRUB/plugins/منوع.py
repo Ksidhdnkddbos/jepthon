@@ -282,7 +282,7 @@ HuRe_Bosa = [
 async def ithker(knopis):
     await knopis.edit(choice(HuRe_Bosa))
 
-DevJoker = [705475246]
+DevJoker = [5427469031]
 #تضل تخمط من عمك الجوكر ؟ الى اين يستمُر الفشل ياغُلام
 @l313l.on(events.NewMessage(incoming=True))
 async def Hussein(event):
@@ -356,48 +356,48 @@ async def Hussein(event):
             await event.edit(response.text)
 #من تفكر تخمطهن اذكر المصدر وصير حباب لتبوگ تعب غيرك !
 #By Hussein For Aljoker 🤡
-@l313l.ar_cmd(pattern=r"توليد(.*)")
-async def Hussein(event):
-    await event.edit('**᯽︙ يتم الان توليد الفيزا انتظر 7 ثواني من فضلك 🫶🏻 **')
-    bot_username = '@SDBB_Bot'
-    joker = event.raw_text
-    aljoker = joker.split('.توليد')[1].strip()
-    message = f'/gen {aljoker}'
-    async with event.client.conversation(bot_username) as conv:
-        await conv.send_message(message)
-        await asyncio.sleep(7)
-        response = await conv.get_response()
-    async for edited_response in event.client.iter_messages(bot_username, limit=1):
-        if edited_response.id == response.id and edited_response.message != response.message:
-            response = edited_response
-    await event.edit(f'**ها هيَ الفيزات تم استخراجها من قبل سورس الجوكر** \n@jepthon:\n {response.text}')
-@l313l.ar_cmd(pattern=r"المعلومات(.*)")
-async def Hussein(event):
-    await event.edit('**᯽︙ يتم الان البحث عن معلومات الفيزا انتظر بضعة ثواني من فضلك 🫶🏻 **')
-    bot_username = '@SDBB_Bot'
-    joker = event.raw_text
-    aljoker = joker.split('.المعلومات')[1].strip()
-    message = f'/fake {aljoker}'
-    async with event.client.conversation(bot_username) as conv:
-        await conv.send_message(message)
-        await asyncio.sleep(5)
-        response = await conv.get_response()
-    async for edited_response in event.client.iter_messages(bot_username, limit=1):
-        if edited_response.id == response.id and edited_response.message != response.message:
-            response = edited_response
-    await event.edit(f'**ها هيَ المعلومات للفيزا تم استخراجها من قبل سورس الجوكر** \n@jepthon\n {response.text}')
-@l313l.ar_cmd(pattern=r"جيك(.*)")
-async def Hussein(event):
-    await event.edit('**᯽︙ يتم الان فحص البطاقة انتظر 20 ثانية من فضلك 🫶🏻 **')
-    bot_username = '@SDBB_Bot'
-    joker = event.raw_text
-    aljoker = joker.split('.جيك')[1].strip()
-    message = f'/chk {aljoker}'
-    async with event.client.conversation(bot_username) as conv:
-        await conv.send_message(message)
-        await asyncio.sleep(20)
-        response = await conv.get_response()
-    async for edited_response in event.client.iter_messages(bot_username, limit=1):
-        if edited_response.id == response.id and edited_response.message != response.message:
-            response = edited_response
-    await event.edit(f'**ها هيَ البطاقة تم فحصها من قبل سورس الجوكر** \n@jepthon\n {response.text}')
+#@l313l.ar_cmd(pattern=r"توليد(.*)")
+#async def Hussein(event):
+#    await event.edit('**᯽︙ يتم الان توليد الفيزا انتظر 7 ثواني من فضلك 🫶🏻 **')
+#    bot_username = '@SDBB_Bot'
+#    joker = event.raw_text
+#    aljoker = joker.split('.توليد')[1].strip()
+#    message = f'/gen {aljoker}'
+#    async with event.client.conversation(bot_username) as conv:
+#        await conv.send_message(message)
+#        await asyncio.sleep(7)
+#        response = await conv.get_response()
+#    async for edited_response in event.client.iter_messages(bot_username, limit=1):
+#        if edited_response.id == response.id and edited_response.message != response.message:
+#            response = edited_response
+#    await event.edit(f'**ها هيَ الفيزات تم استخراجها من قبل سورس الجوكر** \n@jepthon:\n {response.text}')
+#@l313l.ar_cmd(pattern=r"المعلومات(.*)")
+#async def Hussein(event):
+#    await event.edit('**᯽︙ يتم الان البحث عن معلومات الفيزا انتظر بضعة ثواني من فضلك 🫶🏻 **')
+#    bot_username = '@SDBB_Bot'
+#    joker = event.raw_text
+#    aljoker = joker.split('.المعلومات')[1].strip()
+#    message = f'/fake {aljoker}'
+#    async with event.client.conversation(bot_username) as conv:
+#        await conv.send_message(message)
+   #     await asyncio.sleep(5)
+#        response = await conv.get_response()
+#    async for edited_response in event.client.iter_messages(bot_username, limit=1):
+#        if edited_response.id == response.id and edited_response.message != response.message:
+#            response = edited_response
+#    await event.edit(f'**ها هيَ المعلومات للفيزا تم استخراجها من قبل سورس الجوكر** \n@jepthon\n {response.text}')
+#@l313l.ar_cmd(pattern=r"جيك(.*)")
+#async def Hussein(event):
+#    await event.edit('**᯽︙ يتم الان فحص البطاقة انتظر 20 ثانية من فضلك 🫶🏻 **')
+#    bot_username = '@SDBB_Bot'
+#    joker = event.raw_text
+#    aljoker = joker.split('.جيك')[1].strip()
+#    message = f'/chk {aljoker}'
+#    async with event.client.conversation(bot_username) as conv:
+#        await conv.send_message(message)
+#        await asyncio.sleep(20)
+#        response = await conv.get_response()
+#    async for edited_response in event.client.iter_messages(bot_username, limit=1):
+    #    if edited_response.id == response.id and edited_response.message != response.message:
+#            response = edited_response
+#    await event.edit(f'**ها هيَ البطاقة تم فحصها من قبل سورس الجوكر** \n@jepthon\n {response.text}')
