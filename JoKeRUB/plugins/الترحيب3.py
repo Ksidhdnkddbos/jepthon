@@ -46,8 +46,8 @@ async def welcome_message(event):
                 await event.reply(welcome_message, parse_mode="html")
 
 @l313l.ar_cmd(
-    pattern="ا ترحيب(?:\s|$)([\s\S]*)",
-    command=("ا ترحيب", plugin_category),
+    pattern="ا_ترحيب(?:\s|$)([\s\S]*)",
+    command=("ا_ترحيب", plugin_category),
     info={
         "header": "لحفظ رسالة ترحيب جديدة",
         "description": "يحفظ الرسالة كرسالة ترحيب للمجموعة.",
