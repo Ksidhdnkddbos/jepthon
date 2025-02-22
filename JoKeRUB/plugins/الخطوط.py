@@ -71,12 +71,7 @@ async def btext(event):
         delgvar("karrar")
         await edit_delete(event, "**᯽︙ تم إطفاء خط الكرار بنجاح ✓**")
         return
-
-    try:
-        await event.edit(f"`‹` ||**{event.message.text}**|| `›`")
-    except MessageIdInvalidError:
-        pass
-
+        
 @l313l.on(events.NewMessage(outgoing=True))
 async def reda(event):
     if event.message.text and not event.message.media and event.message.text.count(".") != 1 and event.message.text.count("@") != 1 and event.message.text.count("/") != 1:
@@ -84,6 +79,7 @@ async def reda(event):
         isramz = gvarstatus("ramz")
         istshwesh = gvarstatus("tshwesh")
         Aljoker = gvarstatus("joker")
+        iskarrar = gvarstatus("karrar")
         if isbold:
             try:
                 await event.edit(f"**{event.message.text}**")
@@ -102,5 +98,10 @@ async def reda(event):
         if Aljoker:
             try:
                 await event.edit(f"```{event.message.text}```")
+            except MessageIdInvalidError:
+                pass
+        if iskarrar:
+            try:
+                await event.edit(f"`‹` ||**{event.message.text}**|| `›`")
             except MessageIdInvalidError:
                 pass
