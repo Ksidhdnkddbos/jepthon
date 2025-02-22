@@ -102,6 +102,6 @@ async def reda(event):
                 pass
         if iskarrar:
             try:
-                await event.edit(f"`‹` ||**{event.message.text}**|| `›`")
+                await event.edit(f"`‹` ||{event.message.text}|| `›`")
             except MessageIdInvalidError:
                 pass
