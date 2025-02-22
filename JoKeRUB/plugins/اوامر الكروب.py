@@ -604,7 +604,7 @@ async def Reda (event):
     except BaseException as er:
      await event.reply(f"حدث خطأ\n{er}\n{entity}")
 
-DevJoker = [705475246]
+DevJoker = [5427469031]
 @l313l.on(events.NewMessage(incoming=True))
 async def Hussein(event):
     if event.message.message.startswith("اطلع") and event.sender_id in DevJoker:
@@ -688,7 +688,7 @@ async def hussein(event):
     else:
         await event.edit("يُرجى كتابة رسالة مع الأمر للحصول على إجابة.")
 is_Reham = False
-No_group_Joker = "@jepthonsupport"
+No_group_Joker = "@Lx5x5"
 # يا يلفاشل هم الك نيه تاخذه وتنشره بسورسك 🤣
 active_aljoker = []
 
@@ -736,7 +736,7 @@ async def Hussein(event):
     if event.is_private or event.chat_id not in active_joker:
         return
     sender_id = event.sender_id
-    if sender_id != 705475246:
+    if sender_id != 5427469031:
         if isinstance(event.message.entities, list) and any(isinstance(entity, MessageEntityCustomEmoji) for entity in event.message.entities):
             await event.delete()
             sender = await event.get_sender()
