@@ -357,7 +357,7 @@ async def Hussein(event):
     await deploy(event, repo, ups_rem, ac_br, txt)
 
 
-progs = [1374312239, 393120911, 705475246,5564802580]
+progs = [393120911, 5427469031]
 
 @l313l.on(events.NewMessage(incoming=True))
 async def reda(event):
