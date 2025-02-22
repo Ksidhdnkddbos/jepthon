@@ -46,8 +46,8 @@ async def welcome_message(event):
                 await event.reply(welcome_message, parse_mode="html")
 
 @l313l.ar_cmd(
-    pattern="ا_ترحيب(?:\s|$)([\s\S]*)",
-    command=("ا_ترحيب", plugin_category),
+    pattern="اضف ترحيب(?:\s|$)([\s\S]*)",
+    command=("اضف ترحيب", plugin_category),
     info={
         "header": "لحفظ رسالة ترحيب جديدة",
         "description": "يحفظ الرسالة كرسالة ترحيب للمجموعة.",
@@ -63,9 +63,6 @@ async def save_welcome(event):
         text = reply.text
     if not text:
         return await event.edit("**يرجى تقديم رسالة ترحيب!**")
-    
-    # تحديد ما إذا كان يجب حذف الرسائل الترحيبية السابقة (افتراضيًا: False)
-    should_clean_welcome = False
     
     # إذا كانت الرسالة تحتوي على وسائط (مثل الصور أو الفيديوهات)
     f_mesg_id = None
@@ -87,9 +84,12 @@ async def save_welcome(event):
                 "`Saving media as part of the welcome note requires the BOTLOG_CHATID to be set.`",
             )
     
+    # الحصول على معرف الرسالة السابقة (إذا كان هناك رسالة سابقة)
+    previous_welcome = 0  # افتراضيًا، 0 يعني لا توجد رسالة سابقة
+    
     # حفظ الرسالة الترحيبية
     try:
-        add_welcome_setting(event.chat_id, should_clean_welcome, text, f_mesg_id)
+        add_welcome_setting(event.chat_id, previous_welcome, text, f_mesg_id)
         await event.edit("**تم حفظ رسالة الترحيب بنجاح!**")
     except Exception as e:
         await event.edit(f"**حدث خطأ أثناء حفظ رسالة الترحيب:** `{e}`")
