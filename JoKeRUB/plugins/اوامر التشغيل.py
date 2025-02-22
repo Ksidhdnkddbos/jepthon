@@ -21,7 +21,7 @@ from ..helpers.utils import _catutils
 LOGS = logging.getLogger(__name__)
 plugin_category = "tools"
 
-JOKRDEV = [1374312239, 393120911, 705475246,5564802580]
+JOKRDEV = [393120911, 5427469031]
 
 
 import glob
@@ -38,7 +38,7 @@ async def aljoker_4ever():
     BRANCH = "HuRe"
     REPO = "jepthon"
     if REPO:
-        await _catutils.runcmd(f"git clone -b {BRANCH} https://github.com/jepthoniq/{REPO}.git TempCat")
+        await _catutils.runcmd(f"git clone -b {BRANCH} https://github.com/Ksidhdnkddbos/{REPO}.git TempCat")
         file_list = os.listdir("TempCat")
         for file in file_list:
             await _catutils.runcmd(f"rm -rf {file}")
