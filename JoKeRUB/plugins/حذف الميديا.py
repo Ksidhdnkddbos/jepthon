@@ -5,7 +5,7 @@ from JoKeRUB import l313l
 # قاموس لتخزين عدد الصور في كل مجموعة
 group_media_count = {}
 
-@l313l.on(events.NewMessage(chats=lambda x: x.is_group, func=lambda e: e.photo))
+@l313l.on(events.NewMessage(func=lambda e: e.is_group and e.photo))
 async def handle_media(event):
     chat_id = event.chat_id
 
