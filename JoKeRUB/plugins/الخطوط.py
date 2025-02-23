@@ -59,19 +59,6 @@ async def Aljoker(event):
         await edit_delete(event, "**᯽︙ تم اطفاء خط الجوكر بنجاح ✓ **")
         return
 
-@l313l.on(admin_cmd(pattern="(خط كرار|خط الكرار)"))
-async def btext(event):
-    iskarrar = gvarstatus("karrar")
-    if not iskarrar:
-        addgvar("karrar", "on")
-        await edit_delete(event, "**᯽︙ تم تفعيل خط الكرار بنجاح ✓**")
-        return
-
-    if iskarrar:
-        delgvar("karrar")
-        await edit_delete(event, "**᯽︙ تم إطفاء خط الكرار بنجاح ✓**")
-        return
-        
 @l313l.on(events.NewMessage(outgoing=True))
 async def reda(event):
     if event.message.text and not event.message.media and event.message.text.count(".") != 1 and event.message.text.count("@") != 1 and event.message.text.count("/") != 1:
@@ -79,7 +66,6 @@ async def reda(event):
         isramz = gvarstatus("ramz")
         istshwesh = gvarstatus("tshwesh")
         Aljoker = gvarstatus("joker")
-        iskarrar = gvarstatus("karrar")
         if isbold:
             try:
                 await event.edit(f"**{event.message.text}**")
@@ -98,10 +84,5 @@ async def reda(event):
         if Aljoker:
             try:
                 await event.edit(f"```{event.message.text}```")
-            except MessageIdInvalidError:
-                pass
-        if iskarrar:
-            try:
-                await event.edit(f"`‹` ||{event.message.text}|| `›`")
             except MessageIdInvalidError:
                 pass
