@@ -34,8 +34,8 @@ async def dato(event):
         caption=f"""
 - تـم حفظ الـصوت بنجـاح ✓ 
 - غير مبري الذمه اذا استخدمت الامر للابتزاز
-- CH: @Jepthon
-- Dev: @lMl10l
+- CH: @aqhvv
+- Dev: @Lx5x5
   """,
     )
 
@@ -82,10 +82,9 @@ async def Reda(event):
         caption = """**
            ♡  غير مبري الذمة اذا استعملته للأبتزاز  ♡
 ♡ تم حفظ الرسالة الصوتية بنجاح ✓
-♡ تم الصنع : @Jepthon
+♡ تم الصنع : @Lx5x5
 ♡ أسم المرسل : [{0}](tg://user?id={1})
 ♡  تاريخ الرسالة : `{2}`
 ♡  أرسلت في يوم `{3}`
-       ♡    ALJOKER    ♡
         **"""
         await Hussein(event, caption)
