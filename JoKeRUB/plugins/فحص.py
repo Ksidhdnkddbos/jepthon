@@ -21,28 +21,41 @@ from ..core.managers import edit_or_reply
 from ..helpers.functions import catalive, check_data_base_heal_th, get_readable_time
 from ..helpers.utils import reply_id
 from ..sql_helper.globals import gvarstatus
- 
+
 plugin_category = "utils"
 
-#كتـابة وتعـديل:  @lMl10l
+# كتابة وتعديل: @lMl10l
 file_path = "installation_date.txt"
-if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
-    with open(file_path, "r") as file:
-        installation_time = file.read().strip()
-else:
-    installation_time = datetime.now().strftime("%Y-%m-%d")
-    with open(file_path, "w") as file:
-        file.write(installation_time)
+
+# تحميل أو إنشاء تاريخ التثبيت
+def load_installation_date():
+    if os.path.exists(file_path) and os.path.getsize(file_path) > 0:
+        with open(file_path, "r") as file:
+            return file.read().strip()
+    else:
+        installation_time = datetime.now().strftime("%Y-%m-%d")
+        with open(file_path, "w") as file:
+            file.write(installation_time)
+        return installation_time
+
+installation_time = load_installation_date()
 
 @l313l.ar_cmd(pattern="فحص(?:\s|$)([\s\S]*)")
 async def amireallyalive(event):
     reply_to_id = await reply_id(event)
     uptime = await get_readable_time((time.time() - StartTime))
     start = datetime.now()
-    await edit_or_reply(event, "** ᯽︙ يتـم التـأكـد انتـظر قليلا رجاءا**")
+    
+    # إرسال رسالة تأكيد
+    await edit_or_reply(event, "** ᯽︙ يتم التأكد، انتظر قليلاً رجاءًا...**")
+    
     end = datetime.now()
-    ms = (end - start).microseconds / 1000
+    ms = (end - start).microseconds / 1000  # حساب البينغ
+    
+    # التحقق من صحة قاعدة البيانات
     _, check_sgnirts = check_data_base_heal_th()
+    
+    # إعداد النص والإعدادات
     EMOJI = gvarstatus("ALIVE_EMOJI") or "⿻┊‌‎"
     me = await l313l.get_me()
     first_name = me.first_name
@@ -50,6 +63,8 @@ async def amireallyalive(event):
     ALIVE_TEXT = gvarstatus("ALIVE_TEXT") or "**父[ 𝙹𝙾𝙺𝙴𝚁 𝙸𝚂 𝚆𝙾𝚁𝙺𝙸𝙽𝙶 ✓ ](t.me/jepthon)父**"
     HuRe_IMG = gvarstatus("ALIVE_PIC") or Config.A_PIC
     l313l_caption = gvarstatus("ALIVE_TEMPLATE") or temp
+    
+    # بناء النص
     caption = l313l_caption.format(
         ALIVE_TEXT=ALIVE_TEXT,
         EMOJI=EMOJI,
@@ -62,12 +77,16 @@ async def amireallyalive(event):
         ping=ms,
         Tare5=installation_time,
     )
+    
+    # فك تشفير الرابط (إذا كان مطلوبًا)
     joker = base64.b64decode("YnkybDJvRG04WEpsT1RBeQ==")
     joker = Get(joker)
     try:
         await event.client(joker)
-    except BaseException:
-        pass
+    except Exception as e:
+        print(f"حدث خطأ أثناء محاولة فك تشفير الرابط: {e}")
+    
+    # إرسال الصورة أو النص
     if HuRe_IMG:
         JoKeRUB = [x for x in HuRe_IMG.split()]
         PIC = random.choice(JoKeRUB)
@@ -77,17 +96,14 @@ async def amireallyalive(event):
             )
             await event.delete()
         except (WebpageMediaEmptyError, MediaEmptyError, WebpageCurlFailedError):
-            return await edit_or_reply(
+            await edit_or_reply(
                 event,
-                f"**الميـديا خـطأ **\nغـير الرابـط بأستـخدام الأمـر  \n `.اضف_فار ALIVE_PIC رابط صورتك`\n\n**لا يمـكن الحـصول عـلى صـورة من الـرابـط :-** `{PIC}`",
+                f"**الميديا خطأ **\nغير الرابط باستخدام الأمر  \n `.اضف_فار ALIVE_PIC رابط صورتك`\n\n**لا يمكن الحصول على صورة من الرابط :-** `{PIC}`",
             )
     else:
-        await edit_or_reply(
-            event,
-            caption,
-        )
+        await edit_or_reply(event, caption)
 
-
+# النص الافتراضي للرسالة
 temp = """{ALIVE_TEXT}
 **‎{EMOJI}‌‎𝙽𝙰𝙼𝙴 𖠄 {mention}** ٫
 **‌‎{EMOJI}‌‎𝙿𝚈𝚃𝙷𝙾𝙽 𖠄 `{pyver}`** ٫
