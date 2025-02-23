@@ -1,17 +1,13 @@
+#ياقائم آل محمد
+#ربي اشرح لي صدري
+#تمت كتابة الكود من قبل السيد حسين @lMl10l
+#فريق الجوكر @jepthon
 import asyncio
 from telethon import events
 from JoKeRUB import l313l
-
 hussein_enabled = False
 aljoker_enabled = False
 JOKER_ID = {}
-
-# تفعيل أمر تفكيك الكلمة إلى حروفها
-@l313l.on(events.NewMessage(outgoing=True, pattern=r'^\.تفكيك (\w+)$'))
-async def break_word(event):
-    word = event.pattern_match.group(1)
-    letters = ' '.join(list(word))
-    await event.edit(f'{letters}')
 
 @l313l.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def mark_as_read(event):
@@ -57,3 +53,23 @@ async def Hussein(event):
     if hussein_enabled:
         await asyncio.sleep(hussein_time)
         await event.mark_read()
+
+@l313l.on(events.NewMessage(outgoing=True, pattern=r'^\.(تفكيك|ت)(?: |$)(.*)'))
+async def handle_event(event):
+    # الحصول على النص أو الرسالة المردودة
+    malath = event.pattern_match.group(2)
+    if malath:
+        zelzal = malath
+    elif event.is_reply:
+        zelzal = await event.get_reply_message()
+        zelzal = zelzal.text if zelzal else None
+    else:
+        return await edit_or_reply(event, "**⎉╎باضافة كلمة لـ الامـر او بالـࢪد ؏ــلى كلمة لتفكيكها**")
+    
+    # تفكيك النص
+    if zelzal:
+        split_message = split_arabic(zelzal)
+        await l313l.send_message(event.chat_id, split_message)
+        await event.delete()
+    else:
+        await edit_or_reply(event, "**⎉╎لم يتم العثور على نص لتفكيكه**")
