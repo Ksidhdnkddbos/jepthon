@@ -1,5 +1,5 @@
 # By Reda for JoKeRUB
-# Tel: @lx5x5
+# Tel: @rd0r0
 from JoKeRUB import l313l
 import asyncio
 import time
@@ -14,17 +14,18 @@ from telethon.errors import UserNotParticipantError
 spam_chats = []
 mention_in_progress = False
 
-# قائمة الكليشات (يمكنك إضافة أو تعديل الكليشات هنا)
-clips = [
-    "هلاو 🌹",
-    "نورت 🫡",
-    "أهلاً وسهلاً 😊",
-    "مرحباً 👋",
-    "كيفك؟ 🤗",
-    "شرفتنا 🫶",
-    "تفضل يا بطل 🦸‍♂️",
-    "أهلاً بالغالي 🫂",
-]
+# رابط القناة التي تحتوي على الكليشات (يجب أن تكون عامة أو البوت عضو فيها)
+CLIPS_CHANNEL = "https://t.me/dev_karar"  # قم بتغيير الرابط إلى رابط قناتك
+
+async def get_clips():
+    """
+    جلب الكليشات من القناة المحددة.
+    """
+    clips = []
+    async for message in l313l.iter_messages(CLIPS_CHANNEL):
+        if message.text:  # التأكد من أن الرسالة تحتوي على نص
+            clips.append(message.text)
+    return clips
 
 @l313l.ar_cmd(pattern="منشن_كل_5دقايق(?:\s|$)([\s\S]*)")
 async def menall(event):
@@ -45,6 +46,9 @@ async def menall(event):
     spam_chats.append(chat_id)
     usrnum = 0
     usrtxt = ''
+    clips = await get_clips()  # جلب الكليشات من القناة
+    if not clips:
+        return await edit_or_reply(event, "** ᯽︙ لم يتم العثور على كليشات في القناة المحددة!**")
     async for usr in l313l.iter_participants(chat_id):
         if not chat_id in spam_chats:
             break
@@ -69,3 +73,7 @@ async def ca_sp(event):
     except:
       pass
     return await edit_or_reply(event, "** ᯽︙ تم الغاء المنشن بنجاح ✓**")
+
+        mention_in_progress = False
+    else:
+        await event.edit("**᯽︙ 🤷🏻 لاتوجد عملية تاك في هذه المجموعة **")
