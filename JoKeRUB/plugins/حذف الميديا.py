@@ -33,7 +33,7 @@ async def handle_media(event):
     group_media_count[chat_id] += 1
 
     # إذا وصل عدد الصور إلى 25، قم بحذفها وإرسال إشعار
-    if group_media_count[chat_id] >= 25:
+    if group_media_count[chat_id] >= 3:
         await delete_media(event)
         group_media_count[chat_id] = 0  # إعادة العداد إلى الصفر
         await event.reply("تم حذف 25 صورة تلقائيًا.")
