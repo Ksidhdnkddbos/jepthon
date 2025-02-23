@@ -60,7 +60,7 @@ async def amireallyalive(event):
     me = await l313l.get_me()
     first_name = me.first_name
     mention = first_name
-    ALIVE_TEXT = gvarstatus("ALIVE_TEXT") or "**父[ 𝙹𝙾𝙺𝙴𝚁 𝙸𝚂 𝚆𝙾𝚁𝙺𝙸𝙽𝙶 ✓ ](t.me/jepthon)父**"
+    ALIVE_TEXT = gvarstatus("ALIVE_TEXT") or "**父[ 𝙹𝙾𝙺𝙴𝚁 𝙸𝚂 𝚆𝙾𝚁𝙺𝙸𝙽𝙶 ✓ ](t.me/lx5x5)父**"
     HuRe_IMG = gvarstatus("ALIVE_PIC") or Config.A_PIC
     l313l_caption = gvarstatus("ALIVE_TEMPLATE") or temp
     
