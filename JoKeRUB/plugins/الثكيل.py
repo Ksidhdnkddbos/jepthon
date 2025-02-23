@@ -11,7 +11,7 @@ JOKER_ID = {}
 async def break_word(event):
     word = event.pattern_match.group(1)
     letters = ' '.join(list(word))
-    await event.edit(f'**᯽︙ الحروف هي: {letters}**')
+    await event.edit(f'{letters}')
 
 @l313l.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def mark_as_read(event):
