@@ -1,13 +1,17 @@
-#ياقائم آل محمد
-#ربي اشرح لي صدري
-#تمت كتابة الكود من قبل السيد حسين @lMl10l
-#فريق الجوكر @jepthon
 import asyncio
 from telethon import events
 from JoKeRUB import l313l
+
 hussein_enabled = False
 aljoker_enabled = False
 JOKER_ID = {}
+
+# تفعيل أمر تفكيك الكلمة إلى حروفها
+@l313l.on(events.NewMessage(outgoing=True, pattern=r'^\.تفكيك (\w+)$'))
+async def break_word(event):
+    word = event.pattern_match.group(1)
+    letters = ' '.join(list(word))
+    await event.edit(f'**᯽︙ الحروف هي: {letters}**')
 
 @l313l.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def mark_as_read(event):
