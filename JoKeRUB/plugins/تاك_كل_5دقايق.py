@@ -22,18 +22,25 @@ async def get_clips():
     جلب الكليشات من القناة المحددة.
     """
     clips = []
-    async for message in l313l.iter_messages(CLIPS_CHANNEL):
-        if message.text:  # التأكد من أن الرسالة تحتوي على نص
-            clips.append(message.text)
+    try:
+        async for message in l313l.iter_messages(CLIPS_CHANNEL):
+            if message.text:  # التأكد من أن الرسالة تحتوي على نص
+                clips.append(message.text)
+        print(f"تم جلب الكليشات: {clips}")  # طباعة الكليشات
+    except Exception as e:
+        print(f"حدث خطأ أثناء جلب الكليشات: {e}")
     return clips
 
 @l313l.ar_cmd(pattern="منشن_كل_5دقايق(?:\s|$)([\s\S]*)")
 async def menall(event):
+    print("تم استدعاء أمر المنشن!")  # طباعة رسالة تصحيح
     chat_id = event.chat_id
     if event.is_private:
+        print("الحدث في محادثة خاصة!")  # طباعة رسالة تصحيح
         return await edit_or_reply(event, "** ᯽︙ هذا الامر يستعمل للقنوات والمجموعات فقط !**")
     msg = event.pattern_match.group(1)
     if not msg:
+        print("لم يتم تقديم رسالة!")  # طباعة رسالة تصحيح
         return await edit_or_reply(event, "** ᯽︙ ضع رسالة للمنشن اولاً**")
     is_admin = False
     try:
@@ -56,7 +63,7 @@ async def menall(event):
         clip = random.choice(clips)
         usrtxt = f"{clip}\n[{usr.first_name}](tg://user?id={usr.id}) "
         await l313l.send_message(chat_id, usrtxt)
-        await asyncio.sleep(10)  # انتظار 5 دقائق
+        await asyncio.sleep(10)  # انتظار 10 ثواني (للتجربة)
         await event.delete()
     try:
         spam_chats.remove(chat_id)
@@ -73,7 +80,3 @@ async def ca_sp(event):
     except:
       pass
     return await edit_or_reply(event, "** ᯽︙ تم الغاء المنشن بنجاح ✓**")
-
-        mention_in_progress = False
-    else:
-        await event.edit("**᯽︙ 🤷🏻 لاتوجد عملية تاك في هذه المجموعة **")
