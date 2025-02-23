@@ -374,3 +374,24 @@ async def stop_aljoker(event):
     global yaAli
     yaAli = False
     await event.edit("**᯽︙ تم ايقاف النشر التلقائي بنجاح ✓** ")
+
+
+@l313l.ar_cmd(pattern=f"(تفكيك|ت)(?: |$)(.*)")
+async def Hussein(event):
+    # الحصول على النص أو الرسالة المردودة
+    malath = event.pattern_match.group(2)
+    if malath:
+        zelzal = malath
+    elif event.is_reply:
+        zelzal = await event.get_reply_message()
+        zelzal = zelzal.text if zelzal else None
+    else:
+        return await edit_or_reply(event, "**⎉╎باضافة كلمة لـ الامـر او بالـࢪد ؏ــلى كلمة لتفكيكها**")
+    
+    # تفكيك النص
+    if zelzal:
+        split_message = split_arabic(zelzal)
+        await zedub.send_message(event.chat_id, split_message)
+        await event.delete()
+    else:
+        await edit_or_reply(event, "**⎉╎لم يتم العثور على نص لتفكيكه**")
