@@ -8,6 +8,9 @@ import base64
 from pathlib import Path
 import urllib.parse
 
+plugin_category = "utils"
+LOGS = logging.getLogger(__name__)
+
 def get_cookies_file():
     folder_path = f"{os.getcwd()}/karar"
     txt_files = glob.glob(os.path.join(folder_path, '*.txt'))
