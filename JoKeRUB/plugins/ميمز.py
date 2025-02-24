@@ -69,27 +69,7 @@ async def _(event):
         return await event.edit("***حدث خطا ما حاول مجددا**")
 
 
-@l313l.on(admin_cmd(pattern="ايميل وهمي(?: |$)(.*)"))
-async def _(event):
-    chat = "@TempMailBot"
-    geez = await event.edit("**جاري انشاء بريد ...**")
-    async with bot.conversation(chat) as conv:
-        try:
-            response = conv.wait_event(
-                events.NewMessage(incoming=True, from_users=220112646)
-            )
-            await conv.send_message("/start")
-            await asyncio.sleep(1)
-            await conv.send_message("/create")
-            response = await response
-            l313lmail = (response).reply_markup.rows[2].buttons[0].url
-            await event.client.send_read_acknowledge(conv.chat_id)
-        except YouBlockedUserError:
-            await geez.edit("**الغي حظر @TempMailBot  و حاول مجددا**")
-            return
-        await event.edit(
-            f"الايميل الخاص هو `{response.message.message}`\n[ اضغط هنا لرؤية من رسائل الايميل الواردة]({l313lmail})"
-        )
+
 #السلام على الحسين وعلى الارواح التي حلت بفنائك ولعن الله قاتليك
 @l313l.on(admin_cmd(outgoing=True, pattern="غنيلي$"))
 async def aljoker313(event):
@@ -108,11 +88,20 @@ async def aljoker313(event):
     await event.delete()
     
 @l313l.on(admin_cmd(outgoing=True, pattern="شعر$"))
-async def jepvois(vois):
-  rl = random.randint(2,101)
-  url = f"https://t.me/L1BBBL/{rl}"
-  await vois.client.send_file(vois.chat_id,url,caption="᯽︙ BY : @jepthon 🎀",parse_mode="html")
-  await vois.delete()
+async def jepvois(event):
+    # إنشاء رابط عشوائي
+    url = f"https://t.me/L1BBBL/{random.randint(2, 101)}"
+    
+    # إرسال الملف مع التسمية التوضيحية
+    await event.client.send_file(
+        event.chat_id,
+        file=url,
+        caption="᯽︙ Dev : @Lx5x5 .",
+        parse_mode="html"
+    )
+    
+    # حذف الرسالة الأصلية
+    await event.delete()
 @l313l.on(admin_cmd(outgoing=True, pattern="قران$"))
 async def jepvois(vois):
   rl = random.randint(2,101)
