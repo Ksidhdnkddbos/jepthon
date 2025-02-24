@@ -14,6 +14,14 @@ QUALITY = "128k"
 song_dl = "youtube-dl --extract-audio --audio-format mp3 --audio-quality {QUALITY} -o './temp/%(title)s.%(ext)s' {video_link}"
 name_dl = "youtube-dl -e {video_link}"
 
+def get_cookies_file():
+    folder_path = f"{os.getcwd()}/karar"
+    txt_files = glob.glob(os.path.join(folder_path, '*.txt'))
+    if not txt_files:
+        raise FileNotFoundError("No .txt files found in the specified folder.")
+    cookie_txt_file = random.choice(txt_files)
+    return cookie_txt_file
+    
 @events.register(events.NewMessage(pattern=r"بحث(320)?(?:\s|$)([\s\S]*)"))
 async def search_song(event):
     reply_to_id = await event.get_reply_message()
