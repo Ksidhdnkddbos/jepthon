@@ -91,11 +91,20 @@ async def _(event):
             f"الايميل الخاص هو `{response.message.message}`\n[ اضغط هنا لرؤية من رسائل الايميل الواردة]({l313lmail})"
         )
 #السلام على الحسين وعلى الارواح التي حلت بفنائك ولعن الله قاتليك
-@l313l.on(events.NewMessage(outgoing=True, pattern="غنيلي$"))
+@l313l.on(admin_cmd(outgoing=True, pattern="غنيلي$"))
 async def aljoker313(event):
-    rl = random.randint(1, 385)
-    url = f"https://t.me/DwDi1/{rl}"
-    await event.respond(file=url, caption="᯽︙ Dev : @Lx5x5 🎀", parse_mode="html")
+    # إنشاء رابط عشوائي
+    url = f"https://t.me/DwDi1/{random.randint(1, 385)}"
+    
+    # إرسال الملف مع التسمية التوضيحية
+    await event.client.send_file(
+        event.chat_id,
+        file=url,
+        caption="᯽︙ Dev : @Lx5x5 .",
+        parse_mode="html"
+    )
+    
+    # حذف الرسالة الأصلية
     await event.delete()
     
 @l313l.on(admin_cmd(outgoing=True, pattern="شعر$"))
