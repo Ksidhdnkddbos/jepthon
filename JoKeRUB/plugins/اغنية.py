@@ -33,6 +33,11 @@ SONG_SENDING_STRING = "<code>جارِ الارسال انتظر قليلا...</c
 #                                                             #
 # =========================================================== #
 
+def load_cookies_from_file(cookie_file):
+    cookie = SimpleCookie()
+    with open(cookie_file, 'r') as file:
+        cookie.load(file.read())
+    return {key: morsel.value for key, morsel in cookie.items()}
 
 @l313l.ar_cmd(
     pattern="بحث(320)?(?:\s|$)([\s\S]*)",
