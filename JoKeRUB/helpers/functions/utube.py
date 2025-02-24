@@ -35,7 +35,6 @@ name_dl = (
     "yt-dlp --force-ipv4 --get-filename -o './temp/%(title)s.%(ext)s' {video_link}"
 )
 
-
 async def yt_search(JoKeRUB, cookies=None):
     """
     بحث عن فيديو على يوتيوب باستخدام الاستعلام المحدد.
@@ -54,7 +53,7 @@ async def yt_search(JoKeRUB, cookies=None):
         
         if response.status_code == 200:
             print("تم استلام النتائج بنجاح!")  # Debugging
-            user_data = re.findall(r"watch\?v=(\S{11})", response.text)
+            user_data = re.findall(r'"url":"/watch\?v=(\S{11})"', response.text)
             print(f"تم العثور على {len(user_data)} نتيجة.")  # Debugging
             video_link = []
             k = 0
