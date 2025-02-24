@@ -68,13 +68,13 @@ async def _(event):
     # تحميل الكوكيز من الملف
     cookie_file = Path("karar/cookies.txt")
     if cookie_file.exists():
-        cookies = load_cookies_from_file(cookie_file)
+        cookies = str(cookie_file)  # استخدام مسار ملف الكوكيز
     else:
-        cookies = {}
+        cookies = None
 
     # البحث باستخدام الكوكيز
     video_link = await yt_search(str(query), cookies=cookies)
-    if not video_link or video_link == "Couldnt fetch results":
+    if not video_link:
         return await catevent.edit(
             f"⌔∮ عذرا لم استطع ايجاد مقاطع ذات صلة بـ `{query}`"
         )
