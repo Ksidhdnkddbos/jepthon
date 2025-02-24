@@ -3,6 +3,10 @@ import re
 import urllib.request
 from collections import defaultdict
 
+import requests
+import re
+import urllib.parse
+
 import ujson
 import yt_dlp
 from telethon import Button
@@ -31,27 +35,38 @@ name_dl = (
     "yt-dlp --force-ipv4 --get-filename -o './temp/%(title)s.%(ext)s' {video_link}"
 )
 
-
-async def yt_search(JoKeRUB):
+async def yt_search(JoKeRUB, cookies=None):
+    """
+    بحث عن فيديو على يوتيوب باستخدام الاستعلام المحدد.
+    يمكن تمرير الكوكيز إذا كانت متوفرة.
+    """
     try:
         JoKeRUB = urllib.parse.quote(JoKeRUB)
-        html = urllib.request.urlopen(
-            f"https://www.youtube.com/results?search_query={JoKeRUB}"
-        )
-
-        user_data = re.findall(r"watch\?v=(\S{11})", html.read().decode())
-        video_link = []
-        k = 0
-        for i in user_data:
-            if user_data:
-                video_link.append(f"https://www.youtube.com/watch?v={user_data[k]}")
-            k += 1
-            if k > 3:
-                break
-        if video_link:
-            return video_link[0]
-        return "Couldnt fetch results"
-    except Exception:
+        url = f"https://www.youtube.com/results?search_query={JoKeRUB}"
+        
+        # إعداد الطلبات مع الكوكيز إذا كانت متوفرة
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        }
+        response = requests.get(url, headers=headers, cookies=cookies)
+        
+        if response.status_code == 200:
+            user_data = re.findall(r"watch\?v=(\S{11})", response.text)
+            video_link = []
+            k = 0
+            for i in user_data:
+                if user_data:
+                    video_link.append(f"https://www.youtube.com/watch?v={user_data[k]}")
+                k += 1
+                if k > 3:
+                    break
+            if video_link:
+                return video_link[0]
+            return "Couldnt fetch results"
+        else:
+            return "Couldnt fetch results"
+    except Exception as e:
+        print(f"حدث خطأ: {e}")
         return "Couldnt fetch results"
 
 
