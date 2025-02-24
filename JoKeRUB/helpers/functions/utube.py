@@ -2,7 +2,7 @@ import os
 import re
 import urllib.request
 from collections import defaultdict
-
+import asyncio
 import requests
 import re
 import urllib.parse
@@ -35,44 +35,28 @@ name_dl = (
     "yt-dlp --force-ipv4 --get-filename -o './temp/%(title)s.%(ext)s' {video_link}"
 )
 
-async def yt_search(JoKeRUB, cookies=None):
+async def yt_search(query, cookies=None):
     """
     بحث عن فيديو على يوتيوب باستخدام الاستعلام المحدد.
     يمكن تمرير الكوكيز إذا كانت متوفرة.
     """
     try:
-        JoKeRUB = urllib.parse.quote(JoKeRUB)
-        url = f"https://www.youtube.com/results?search_query={JoKeRUB}"
-        
-        # إعداد الطلبات مع الكوكيز إذا كانت متوفرة
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        await asyncio.sleep(1)  # تأخير لمدة ثانية واحدة
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'quiet': True,
+            'cookiefile': cookies if cookies else None,  # استخدام الكوكيز إذا كانت متوفرة
         }
-        print(f"جارٍ تنفيذ الطلب إلى: {url}")  # Debugging
-        response = requests.get(url, headers=headers, cookies=cookies)
-        
-        if response.status_code == 200:
-            print("تم استلام النتائج بنجاح!")  # Debugging
-            user_data = re.findall(r'"url":"/watch\?v=(\S{11})"', response.text)
-            print(f"تم العثور على {len(user_data)} نتيجة.")  # Debugging
-            video_link = []
-            k = 0
-            for i in user_data:
-                if user_data:
-                    video_link.append(f"https://www.youtube.com/watch?v={user_data[k]}")
-                k += 1
-                if k > 3:
-                    break
-            if video_link:
-                print(f"الرابط الأول: {video_link[0]}")  # Debugging
-                return video_link[0]
-            return "Couldnt fetch results"
-        else:
-            print(f"فشل الطلب. رمز الحالة: {response.status_code}")  # Debugging
-            return "Couldnt fetch results"
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(f"ytsearch:{query}", download=False)
+            if info and 'entries' in info:
+                video_link = info['entries'][0]['url']
+                return video_link
+            else:
+                return None
     except Exception as e:
-        print(f"حدث خطأ: {e}")  # Debugging
-        return "Couldnt fetch results"
+        print(f"حدث خطأ: {e}")
+        return None
 
 async def ytsearch(query, limit):
     result = ""
