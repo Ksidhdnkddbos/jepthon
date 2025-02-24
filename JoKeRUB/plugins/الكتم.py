@@ -45,28 +45,36 @@ def remove_from_mute_list(user_id):
     save_muted_ids()
 
 #=================== الكـــــــــــــــتم  ===================  #
-
 @l313l.ar_cmd(pattern=f"كتم(?:\s|$)([\s\S]*)")
 async def mutejep(event):
-    if event.is_private:
-        replied_user = await event.client.get_entity(event.chat_id)
-        if is_muted(event.chat_id, event.chat_id):
-            return await event.edit("**- هـذا المسـتخـدم مڪتـوم . . سـابقـاً **")
-        if event.chat_id == l313l.uid:
-            return await edit_delete(event, "**𖡛... . لمـاذا تࢪيـد كتم نفسـك؟  ...𖡛**")
-        if event.chat_id == 5427469031:
-            return await edit_delete(event, "** دي . . لا يمڪنني كتـم مطـور السـورس  ╰**")
+    args = event.pattern_match.group(1).strip()
+    user = None
+
+    if args.isdigit():  # إذا كان الـ ID رقمًا
+        user_id = int(args)
         try:
-            mute(event.chat_id, event.chat_id)
-            add_to_mute_list(replied_user)
+            user = await event.client(GetFullUserRequest(user_id))
         except Exception as e:
-            await event.edit(f"**- خطــأ : **`{e}`")
-        else:
-            return await event.client.send_file(
-                event.chat_id,
-                joker_mute,
-                caption="** تم ڪتـم الـمستخـدم  . . بنجـاح 🔕✓**",
-            )
+            return await event.edit(f"**- خطأ: لا يمكن العثور على المستخدم بالـ ID {user_id}**")
+    else:
+        return await event.edit("**- يرجى تقديم ID صحيح**")
+
+    if not user:
+        return await event.edit("**- لم يتم العثور على المستخدم**")
+
+    # باقي الكود الخاص بالكتم
+    try:
+        mute(user.user.id, event.chat_id)
+        add_to_mute_list(user.user)
+    except Exception as e:
+        return await event.edit(f"**- خطأ: {e}**")
+
+    await event.client.send_file(
+        event.chat_id,
+        joker_mute,
+        caption=f"**- المستخدم: {_format.mentionuser(user.user.first_name, user.user.id)} \n- تم كتمه بنجاح ✓**",
+    )
+
         if BOTLOG:
             await event.client.send_message(
                 BOTLOG_CHATID,
