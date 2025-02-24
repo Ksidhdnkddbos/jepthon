@@ -72,36 +72,19 @@ async def _(event):
 
 #السلام على الحسين وعلى الارواح التي حلت بفنائك ولعن الله قاتليك
 @l313l.on(admin_cmd(outgoing=True, pattern="غنيلي$"))
-async def aljoker313(event):
-    # إنشاء رابط عشوائي
-    url = f"https://t.me/DwDi1/{random.randint(1, 385)}"
-    
-    # إرسال الملف مع التسمية التوضيحية
-    await event.client.send_file(
-        event.chat_id,
-        file=url,
-        caption="᯽︙ Dev : @Lx5x5 .",
-        parse_mode="html"
-    )
-    
-    # حذف الرسالة الأصلية
-    await event.delete()
-    
+async def aljoker313(joker313):
+  rl = random.randint(1,385)
+  url = f"https://t.me/DwDi1/{rl}"
+  await joker313.client.send_file(joker313.chat_id,url,caption="᯽︙ Dev : @Lx5x5 .",parse_mode="html")
+  await joker313.delete()
+
 @l313l.on(admin_cmd(outgoing=True, pattern="شعر$"))
-async def jepvois(event):
-    # إنشاء رابط عشوائي
-    url = f"https://t.me/L1BBBL/{random.randint(2, 101)}"
-    
-    # إرسال الملف مع التسمية التوضيحية
-    await event.client.send_file(
-        event.chat_id,
-        file=url,
-        caption="᯽︙ Dev : @Lx5x5 .",
-        parse_mode="html"
-    )
-    
-    # حذف الرسالة الأصلية
-    await event.delete()
+async def jepvois(vois):
+  rl = random.randint(2,101)
+  url = f"https://t.me/L1BBBL/{rl}"
+  await vois.client.send_file(vois.chat_id,url,caption="᯽︙ Dev : @Lx5x5 .",parse_mode="html")
+  await vois.delete()
+   
 @l313l.on(admin_cmd(outgoing=True, pattern="قران$"))
 async def jepvois(vois):
   rl = random.randint(2,101)
