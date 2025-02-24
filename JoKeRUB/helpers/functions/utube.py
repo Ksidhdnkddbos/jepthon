@@ -35,6 +35,7 @@ name_dl = (
     "yt-dlp --force-ipv4 --get-filename -o './temp/%(title)s.%(ext)s' {video_link}"
 )
 
+
 async def yt_search(JoKeRUB, cookies=None):
     """
     بحث عن فيديو على يوتيوب باستخدام الاستعلام المحدد.
@@ -48,10 +49,13 @@ async def yt_search(JoKeRUB, cookies=None):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
         }
+        print(f"جارٍ تنفيذ الطلب إلى: {url}")  # Debugging
         response = requests.get(url, headers=headers, cookies=cookies)
         
         if response.status_code == 200:
+            print("تم استلام النتائج بنجاح!")  # Debugging
             user_data = re.findall(r"watch\?v=(\S{11})", response.text)
+            print(f"تم العثور على {len(user_data)} نتيجة.")  # Debugging
             video_link = []
             k = 0
             for i in user_data:
@@ -61,14 +65,15 @@ async def yt_search(JoKeRUB, cookies=None):
                 if k > 3:
                     break
             if video_link:
+                print(f"الرابط الأول: {video_link[0]}")  # Debugging
                 return video_link[0]
             return "Couldnt fetch results"
         else:
+            print(f"فشل الطلب. رمز الحالة: {response.status_code}")  # Debugging
             return "Couldnt fetch results"
     except Exception as e:
-        print(f"حدث خطأ: {e}")
+        print(f"حدث خطأ: {e}")  # Debugging
         return "Couldnt fetch results"
-
 
 async def ytsearch(query, limit):
     result = ""
