@@ -4,6 +4,7 @@ import io
 import urllib.parse
 import os
 from pathlib import Path
+from http.cookies import SimpleCookie
 
 from ShazamAPI import Shazam
 from telethon import types
@@ -32,6 +33,12 @@ SONG_SENDING_STRING = "<code>جارِ الارسال انتظر قليلا...</c
 #                                                             #
 # =========================================================== #
 
+def load_cookies_from_file(cookie_file):
+    cookie = SimpleCookie()
+    with open(cookie_file, 'r') as file:
+        cookie.load(file.read())
+    return {key: morsel.value for key, morsel in cookie.items()}
+
 @l313l.ar_cmd(
     pattern="بحث(320)?(?:\s|$)([\s\S]*)",
     command=("بحث", plugin_category),
@@ -57,7 +64,15 @@ async def _(event):
         return await edit_or_reply(event, "⌔∮ يرجى الرد على ما تريد البحث عنه")
     cat = base64.b64decode("YnkybDJvRG04WEpsT1RBeQ==")
     catevent = await edit_or_reply(event, "⌔∮ جاري البحث عن المطلوب انتظر")
-    video_link = await yt_search(str(query))
+    
+    # تحميل الكوكيز من الملف
+    cookie_file = Path("karar/cookies.txt")
+    if cookie_file.exists():
+        cookies = load_cookies_from_file(cookie_file)
+    else:
+        cookies = {}
+
+    video_link = await yt_search(str(query), cookies=cookies)
     if not url(video_link):
         return await catevent.edit(
             f"⌔∮ عذرا لم استطع ايجاد مقاطع ذات صلة بـ `{query}`"
@@ -111,7 +126,6 @@ async def _(event):
     except ChatSendMediaForbiddenError as err:
         await catevent.edit("لا يمكن ارسال المقطع الصوتي هنا")
         LOGS.error(str(err))
-
 
 @l313l.ar_cmd(
     pattern="فيديو(?:\s|$)([\s\S]*)",
