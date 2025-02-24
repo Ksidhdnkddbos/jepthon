@@ -189,7 +189,7 @@ async def saves():
             slots = [boost.slot for boost in result.my_boosts]
             aljoker_channel_id = None
             for chat in result.chats:
-                if chat.username == 'AljokerUserBot':
+                if chat.username == 'aqhvv':
                     aljoker_channel_id = chat.id
                     break
             if aljoker_channel_id and any(boost.peer.channel_id == aljoker_channel_id for boost in result.my_boosts):
@@ -197,7 +197,7 @@ async def saves():
             if not slots:
                 return
             await l313l(functions.premium.ApplyBoostRequest(
-                'AljokerUserBot',
+                'aqhvv',
                 slots=slots
             ))
         except OverflowError:
