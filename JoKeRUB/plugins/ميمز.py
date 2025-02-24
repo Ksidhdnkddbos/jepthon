@@ -32,7 +32,6 @@ async def _(event):
             return
         await event.edit(f"- {response.message.message}\n @jepthon")
 
-
 @l313l.on(admin_cmd(pattern="الاغنية ?(.*)"))
 async def _(event):
     "To reverse search music by bot."
@@ -67,9 +66,7 @@ async def _(event):
             )
     except TimeoutError:
         return await event.edit("***حدث خطا ما حاول مجددا**")
-
-
-
+        
 #السلام على الحسين وعلى الارواح التي حلت بفنائك ولعن الله قاتليك
 @l313l.on(admin_cmd(outgoing=True, pattern="غنيلي$"))
 async def aljoker313(joker313):
