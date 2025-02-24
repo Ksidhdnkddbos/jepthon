@@ -91,12 +91,12 @@ async def _(event):
             f"الايميل الخاص هو `{response.message.message}`\n[ اضغط هنا لرؤية من رسائل الايميل الواردة]({l313lmail})"
         )
 #السلام على الحسين وعلى الارواح التي حلت بفنائك ولعن الله قاتليك
-@l313l.on(admin_cmd(outgoing=True, pattern="غنيلي$"))
-async def aljoker313(joker313):
-  rl = random.randint(1,385)
-  url = f"https://t.me/DwDi1/{rl}"
-  await joker313.client.send_file(joker313.chat_id,url,caption="᯽︙ BY : @jepthon 🎀",parse_mode="html")
-  await joker313.delete()
+@l313l.on(events.NewMessage(outgoing=True, pattern="غنيلي$"))
+async def aljoker313(event):
+    rl = random.randint(1, 385)
+    url = f"https://t.me/DwDi1/{rl}"
+    await event.respond(file=url, caption="᯽︙ Dev : @Lx5x5 🎀", parse_mode="html")
+    await event.delete()
     
 @l313l.on(admin_cmd(outgoing=True, pattern="شعر$"))
 async def jepvois(vois):
