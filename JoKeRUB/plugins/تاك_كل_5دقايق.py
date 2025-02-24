@@ -61,10 +61,9 @@ async def menall(event):
             break
         # اختيار كليشة عشوائية من القائمة
         clip = random.choice(clips)
-        usrtxt = f"{clip}\n[{usr.first_name}](tg://user?id={usr.id}) "
+        usrtxt = f"{clip} [{usr.first_name}](tg://user?id={usr.id})"
         await l313l.send_message(chat_id, usrtxt)
-        await asyncio.sleep(300)  # انتظار 10 ثواني (للتجربة)
-        await event.delete()
+        await asyncio.sleep(5)  # انتظار 5 دقائق
     try:
         spam_chats.remove(chat_id)
     except:
