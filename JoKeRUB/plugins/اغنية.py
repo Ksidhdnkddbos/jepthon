@@ -1,12 +1,55 @@
-from telethon import events
-from telethon.errors import ChatSendMediaForbiddenError
-from youtube_search import YoutubeSearch
-import yt_dlp
-import requests
+import asyncio
+import glob
+import contextlib
+import io
 import os
-import base64
+import re
+import pathlib
+from time import time
+import requests
+import random
 from pathlib import Path
-import urllib.parse
+
+import aiohttp
+import aiofiles
+import wget
+import yt_dlp
+from yt_dlp import YoutubeDL
+from youtube_search import YoutubeSearch
+from ShazamAPI import Shazam
+from validators.url import url
+
+from urlextract import URLExtract
+from wget import download
+from yt_dlp import YoutubeDL
+from yt_dlp.utils import (
+    ContentTooShortError,
+    DownloadError,
+    ExtractorError,
+    GeoRestrictedError,
+    MaxDownloadsReached,
+    PostProcessingError,
+    UnavailableVideoError,
+    XAttrMetadataError,
+)
+
+from telethon import events
+from telethon.tl import types
+from telethon.utils import get_attributes
+from telethon.errors.rpcerrorlist import YouBlockedUserError, ChatSendMediaForbiddenError
+from telethon.tl.functions.contacts import UnblockRequest as unblock
+
+from ..Config import Config
+from ..core import pool
+from ..core.logger import logging
+from ..core.managers import edit_delete, edit_or_reply
+from ..helpers import progress, reply_id
+from ..helpers.functions import delete_conv, name_dl, song_dl, video_dl, yt_search
+from ..helpers.functions.utube import _mp3Dl, get_yt_video_id, get_ytthumb, ytsearch
+from ..helpers.tools import media_type
+from ..helpers.utils import _format, reply_id, _zedutils
+from . import BOTLOG, BOTLOG_CHATID, zedub
+
 
 plugin_category = "utils"
 LOGS = logging.getLogger(__name__)
