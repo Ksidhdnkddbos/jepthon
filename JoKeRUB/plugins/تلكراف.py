@@ -1,36 +1,3 @@
-#JoKeRUB
-#- - - - - - - - - - - - -
-#Hussein : @lMl10l
-#@jepthon
-#- - - - - - - - - - - - -
-
-import os
-import random
-import string
-from datetime import datetime
-
-from PIL import Image
-from telegraph import Telegraph, exceptions, upload_file
-from telethon.utils import get_display_name
-
-from JoKeRUB import l313l
-
-from ..Config import Config
-from ..core.logger import logging
-from ..core.managers import edit_or_reply
-from . import BOTLOG, BOTLOG_CHATID
-
-LOGS = logging.getLogger(__name__)
-plugin_category = "utils"
-
-telegraph = Telegraph()
-r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
-auth_url = r["auth_url"]
-
-def resize_image(image):
-    im = Image.open(image)
-    im.save(image, "PNG")
-
 @l313l.ar_cmd(
     pattern="(ت(ل)?ك(راف)?) ?(m|t|ميديا|نص)(?:\s|$)([\s\S]*)",
     command=("تلكراف", plugin_category),
@@ -49,7 +16,7 @@ def resize_image(image):
             "{tr}telegraph text <title(optional)>",
         ],
     },
-)  # sourcery no-metrics
+)
 async def _(event):
     "To get telegraph link."
     jokevent = await edit_or_reply(event, "` ⌔︙جـار انشـاء رابـط تلكـراف`")
@@ -62,27 +29,49 @@ async def _(event):
     start = datetime.now()
     r_message = await event.get_reply_message()
     input_str = (event.pattern_match.group(4)).strip()
+
     if input_str in ["ميديا", "m"]:
-        downloaded_file_name = await event.client.download_media(
-            r_message, Config.TEMP_DIR
-        )
-        await jokevent.edit(f"` ⌔︙تـم التحـميل الـى {downloaded_file_name}`")
-        if downloaded_file_name.endswith((".webp")):
-            resize_image(downloaded_file_name)
         try:
-            media_urls = upload_file(downloaded_file_name)
-        except exceptions.TelegraphException as exc:
-            await jokevent.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
-            os.remove(downloaded_file_name)
-        else:
+            # تحميل الملف
+            downloaded_file_name = await event.client.download_media(
+                r_message, Config.TEMP_DIR
+            )
+            await jokevent.edit(f"` ⌔︙تـم التحـميل الـى {downloaded_file_name}`")
+
+            # إذا كان الملف من نوع .webp، نقوم بتحويله
+            if downloaded_file_name.endswith((".webp")):
+                resize_image(downloaded_file_name)
+
+            # رفع الملف إلى graph.org
+            try:
+                media_urls = upload_file(downloaded_file_name)
+            except exceptions.TelegraphException as exc:
+                await jokevent.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
+                os.remove(downloaded_file_name)
+                return
+
+            # حساب الوقت المستغرق
             end = datetime.now()
             ms = (end - start).seconds
-            os.remove(downloaded_file_name)
+
+            # تغيير النطاق من telegra.ph إلى graph.org
+            media_url = f"https://graph.org{media_urls[0]}"
+
+            # إرسال الرابط
             await jokevent.edit(
-                f"** ⌔︙الـرابـط : **[إضـغط هنـا](https://graph.org{media_urls[0]})\
+                f"** ⌔︙الـرابـط : **[إضـغط هنـا]({media_url})\
                     \n** ⌔︙الوقـت المأخـوذ : **`{ms} ثـانيـة.`",
                 link_preview=False,
             )
+
+            # حذف الملف المؤقت
+            os.remove(downloaded_file_name)
+
+        except Exception as e:
+            await jokevent.edit(f"** ⌔︙حـدث خـطأ : **\n`{str(e)}`")
+            if os.path.exists(downloaded_file_name):
+                os.remove(downloaded_file_name)
+
     elif input_str in ["نص", "t"]:
         user_object = await event.client.get_entity(r_message.sender_id)
         title_of_page = get_display_name(user_object)
@@ -119,4 +108,4 @@ async def _(event):
             f"** ⌔︙الـرابـط : ** [اضغـط هنـا]({joker})\
                  \n** ⌔︙الـوقـت المـأخـوذ : **`{ms} ثـانيـة.`",
             link_preview=False,
-        )
+            )
