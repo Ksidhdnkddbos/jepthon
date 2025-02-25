@@ -11,22 +11,21 @@ LOGS = logging.getLogger(__name__)
 plugin_category = "utils"
 
 
-def upload_to_catbox(file_path):
+def upload_to_anonfiles(file_path):
     """
-    رفع الملف إلى catbox.moe وإرجاع الرابط.
+    رفع الملف إلى anonfiles وإرجاع الرابط.
     """
-    url = "https://catbox.moe/user/api.php"
+    url = "https://api.anonfiles.com/upload"
     try:
         with open(file_path, "rb") as file:
-            # إرسال الملف مع تحديد نوع الطلب بشكل صحيح
-            response = requests.post(url, files={"fileToUpload": file}, timeout=10)
+            response = requests.post(url, files={"file": file}, timeout=10)
         if response.status_code == 200:
-            return response.text.strip()
+            return response.json()["data"]["file"]["url"]["full"]
         else:
             LOGS.error(f"فشل في الرفع: {response.status_code} - {response.text}")
             return None
     except Exception as e:
-        LOGS.error(f"حدث خطأ أثناء الرفع إلى catbox.moe: {e}")
+        LOGS.error(f"حدث خطأ أثناء الرفع إلى anonfiles: {e}")
         return None
 
 
@@ -34,28 +33,28 @@ def upload_to_catbox(file_path):
     pattern="(ت(ل)?ك(راف)?) ?(m|t|ميديا|نص)(?:\s|$)([\s\S]*)",
     command=("تلكراف", plugin_category),
     info={
-        "header": "To get catbox link.",
-        "description": "Reply to text message to paste that text on catbox you can also pass input along with command \
-            So that to customize title of that catbox and reply to media file to get sharable link of that media(atmost 5mb is supported)",
+        "header": "To get anonfiles link.",
+        "description": "Reply to text message to paste that text on anonfiles you can also pass input along with command \
+            So that to customize title of that anonfiles and reply to media file to get sharable link of that media(atmost 5mb is supported)",
         "options": {
-            "m or media": "To get catbox link of replied sticker/image/video/gif.",
-            "t or text": "To get catbox link of replied text you can use custom title.",
+            "m or media": "To get anonfiles link of replied sticker/image/video/gif.",
+            "t or text": "To get anonfiles link of replied text you can use custom title.",
         },
         "usage": [
             "{tr}tgm",
             "{tr}tgt <title(optional)>",
-            "{tr}catbox media",
-            "{tr}catbox text <title(optional)>",
+            "{tr}anonfiles media",
+            "{tr}anonfiles text <title(optional)>",
         ],
     },
 )
 async def _(event):
-    "To get catbox link."
-    jokevent = await edit_or_reply(event, "` ⌔︙جـار انشـاء رابـط catbox`")
+    "To get anonfiles link."
+    jokevent = await edit_or_reply(event, "` ⌔︙جـار انشـاء رابـط anonfiles`")
     optional_title = event.pattern_match.group(5)
     if not event.reply_to_msg_id:
         return await jokevent.edit(
-            "` ⌔︙قـم بالـرد عـلى هـذه الرسـالة للحـصول عـلى رابـط catbox فـورا`",
+            "` ⌔︙قـم بالـرد عـلى هـذه الرسـالة للحـصول عـلى رابـط anonfiles فـورا`",
         )
 
     start = datetime.now()
@@ -70,10 +69,10 @@ async def _(event):
             )
             await jokevent.edit(f"` ⌔︙تـم التحـميل الـى {downloaded_file_name}`")
 
-            # رفع الملف إلى catbox.moe
-            file_url = upload_to_catbox(downloaded_file_name)
+            # رفع الملف إلى anonfiles
+            file_url = upload_to_anonfiles(downloaded_file_name)
             if not file_url:
-                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى catbox.moe`")
+                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى anonfiles`")
                 os.remove(downloaded_file_name)
                 return
 
@@ -117,10 +116,10 @@ async def _(event):
             os.remove(downloaded_file_name)
         page_content = page_content.replace("\n", "<br>")
         try:
-            # رفع النص إلى catbox.moe
-            file_url = upload_to_catbox(downloaded_file_name)
+            # رفع النص إلى anonfiles
+            file_url = upload_to_anonfiles(downloaded_file_name)
             if not file_url:
-                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى catbox.moe`")
+                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى anonfiles`")
                 return
 
             end = datetime.now()
