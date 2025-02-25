@@ -10,7 +10,8 @@ import string
 from datetime import datetime
 
 from PIL import Image
-from telegraph import Telegraph, exceptions, upload_file
+from telethon import events
+from telethon.tl.types import InputPeerUser
 from telethon.utils import get_display_name
 
 from JoKeRUB import l313l
@@ -23,9 +24,7 @@ from . import BOTLOG, BOTLOG_CHATID
 LOGS = logging.getLogger(__name__)
 plugin_category = "utils"
 
-telegraph = Telegraph()
-r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
-auth_url = r["auth_url"]
+TELEGRAPH_BOT_USERNAME = "@vTelegraphBot"  # بوت التلكراف
 
 def resize_image(image):
     im = Image.open(image)
@@ -62,27 +61,58 @@ async def _(event):
     start = datetime.now()
     r_message = await event.get_reply_message()
     input_str = (event.pattern_match.group(4)).strip()
+
     if input_str in ["ميديا", "m"]:
+        # تحميل الميديا
         downloaded_file_name = await event.client.download_media(
             r_message, Config.TEMP_DIR
         )
         await jokevent.edit(f"` ⌔︙تـم التحـميل الـى {downloaded_file_name}`")
+
+        # تغيير حجم الصورة إذا كانت بصيغة webp
         if downloaded_file_name.endswith((".webp")):
             resize_image(downloaded_file_name)
+
+        # إرسال الميديا إلى بوت التلكراف
         try:
-            media_urls = upload_file(downloaded_file_name)
-        except exceptions.TelegraphException as exc:
-            await jokevent.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
+            await event.client.send_file(TELEGRAPH_BOT_USERNAME, downloaded_file_name)
+            await jokevent.edit("` ⌔︙تـم إرسـال الميديـا إلـى بـوت التلكـراف`")
+        except Exception as e:
+            await jokevent.edit(f"** ⌔︙خـطأ : **\n`{e}`")
             os.remove(downloaded_file_name)
-        else:
-            end = datetime.now()
-            ms = (end - start).seconds
-            os.remove(downloaded_file_name)
-            await jokevent.edit(
-                f"** ⌔︙الـرابـط : **[إضـغط هنـا](https://graph.org{media_urls[0]})\
-                    \n** ⌔︙الوقـت المأخـوذ : **`{ms} ثـانيـة.`",
-                link_preview=False,
-            )
+            return
+
+        # الانتظار للحصول على رد البوت
+        async with event.client.conversation(TELEGRAPH_BOT_USERNAME) as conv:
+            try:
+                # انتظار الرسالة الأولى من البوت
+                bot_response = await conv.get_response(timeout=10)
+                if "please click on button after sending all files" in bot_response.text:
+                    # الضغط على الزر الإنلاين
+                    await bot_response.click(text="Get Link")  # النص على الزر
+                    # انتظار الرابط من البوت
+                    telegraph_link_response = await conv.get_response(timeout=10)
+                    telegraph_link = telegraph_link_response.text.strip()
+            except Exception as e:
+                await jokevent.edit(f"** ⌔︙خـطأ : **\n`{e}`")
+                os.remove(downloaded_file_name)
+                return
+
+        # حذف المحادثة مع البوت
+        await event.client.delete_messages(TELEGRAPH_BOT_USERNAME, [bot_response.id, telegraph_link_response.id])
+
+        # إرسال الرابط للمستخدم
+        end = datetime.now()
+        ms = (end - start).seconds
+        await jokevent.edit(
+            f"** ⌔︙الـرابـط : **[إضـغط هنـا]({telegraph_link})\
+                \n** ⌔︙الوقـت المأخـوذ : **`{ms} ثـانيـة.`",
+            link_preview=False,
+        )
+
+        # حذف الملف المؤقت
+        os.remove(downloaded_file_name)
+
     elif input_str in ["نص", "t"]:
         user_object = await event.client.get_entity(r_message.sender_id)
         title_of_page = get_display_name(user_object)
@@ -113,7 +143,7 @@ async def _(event):
             response = telegraph.create_page(title_of_page, html_content=page_content)
         end = datetime.now()
         ms = (end - start).seconds
-        joker = f"https://graph.org/{response['path']}"
+        joker = f"https://telegra.ph/{response['path']}"
         await jokevent.edit(
             f"** ⌔︙الـرابـط : ** [اضغـط هنـا]({joker})\
                  \n** ⌔︙الـوقـت المـأخـوذ : **`{ms} ثـانيـة.`",
