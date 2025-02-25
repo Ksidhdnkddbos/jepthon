@@ -47,7 +47,6 @@ async def change_number(strses, number):
         )
     ))
     return str(result)
-
 async def change_2fa(strses, current_password, new_password, hint=""):
     async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
         bot = client = X
@@ -57,8 +56,8 @@ async def change_2fa(strses, current_password, new_password, hint=""):
             
             # إنشاء إعدادات كلمة المرور الجديدة
             new_settings = types.account.PasswordInputSettings(
-                new_algo=password.new_algo,
-                new_password_hash=password.new_password_hash,  # تم تصحيح الخطأ هنا
+                new_algo=password.current_algo,  # استخدام الخوارزمية الحالية
+                new_password_hash=new_password,  # استخدام كلمة المرور الجديدة
                 hint=hint,
                 email=""
             )
@@ -68,7 +67,7 @@ async def change_2fa(strses, current_password, new_password, hint=""):
                 password=types.InputCheckPasswordSRP(
                     srp_id=password.srp_id,
                     A=password.A,
-                    M1=password.M1  # تم تصحيح الخطأ هنا
+                    M1=password.M1
                 ),
                 new_settings=new_settings
             ))
