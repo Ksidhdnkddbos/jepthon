@@ -58,7 +58,7 @@ async def change_2fa(strses, current_password, new_password, hint=""):
             # إنشاء إعدادات كلمة المرور الجديدة
             new_settings = types.account.PasswordInputSettings(
                 new_algo=password.new_algo,
-                new_password_hash=await bot(functions.account.GetPasswordRequest()).new_password_hash,
+                new_password_hash=password.new_password_hash,  # تم تصحيح الخطأ هنا
                 hint=hint,
                 email=""
             )
@@ -68,7 +68,7 @@ async def change_2fa(strses, current_password, new_password, hint=""):
                 password=types.InputCheckPasswordSRP(
                     srp_id=password.srp_id,
                     A=password.A,
-                    M1=await bot(functions.account.GetPasswordRequest()).M1
+                    M1=password.M1  # تم تصحيح الخطأ هنا
                 ),
                 new_settings=new_settings
             ))
