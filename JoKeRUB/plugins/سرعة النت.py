@@ -25,7 +25,7 @@ def convert_from_bytes(size):
 
 
 @l313l.ar_cmd(
-    pattern="سرعة النت(?:\s|$)([\s\S]*)",
+    pattern="(سرعة الانترنت|سرعة النت)(?:\s|$)([\s\S]*)",
     command=("سرعة النت", plugin_category),
     info={
         "header": "Botserver's speedtest by ookla.",
