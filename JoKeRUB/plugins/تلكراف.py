@@ -1,101 +1,103 @@
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~# JoKeRUB #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+# Copyright (C) 2020-2023 by TgCatUB@Github.
+
+# This file is part of: https://github.com/TgCatUB/catuserbot
+# and is released under the "GNU v3.0 License Agreement".
+
+# Please see: https://github.com/TgCatUB/catuserbot/blob/master/LICENSE
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+
 import os
-import requests
+import random
+import string
 from datetime import datetime
+
+from PIL import Image
+from telegraph import Telegraph, exceptions, upload_file
+from telethon.errors.rpcerrorlist import YouBlockedUserError
+from telethon.tl.functions.contacts import UnblockRequest as unblock
 from telethon.utils import get_display_name
-from JoKeRUB import l313l
+from urlextract import URLExtract
+
 from ..Config import Config
 from ..core.logger import logging
-from ..core.managers import edit_or_reply
+from ..core.managers import edit_delete, edit_or_reply
+from ..helpers.functions import delete_conv
+from . import BOTLOG, BOTLOG_CHATID, l313l, reply_id
 
 LOGS = logging.getLogger(__name__)
+
 plugin_category = "utils"
 
+extractor = URLExtract()
+telegraph = Telegraph()
+r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
+auth_url = r["auth_url"]
 
-def upload_to_anonfiles(file_path):
-    """
-    رفع الملف إلى anonfiles وإرجاع الرابط.
-    """
-    url = "https://api.anonfiles.com/upload"
-    try:
-        with open(file_path, "rb") as file:
-            response = requests.post(url, files={"file": file}, timeout=10)
-        if response.status_code == 200:
-            return response.json()["data"]["file"]["url"]["full"]
-        else:
-            LOGS.error(f"فشل في الرفع: {response.status_code} - {response.text}")
-            return None
-    except Exception as e:
-        LOGS.error(f"حدث خطأ أثناء الرفع إلى anonfiles: {e}")
-        return None
+
+def resize_image(image):
+    im = Image.open(image)
+    im.save(image, "PNG")
 
 
 @l313l.ar_cmd(
-    pattern="(ت(ل)?ك(راف)?) ?(m|t|ميديا|نص)(?:\s|$)([\s\S]*)",
-    command=("تلكراف", plugin_category),
+    pattern="(t(ele)?g(raph)?) ?(m|t|media|text)(?:\s|$)([\s\S]*)",
+    command=("telegraph", plugin_category),
     info={
-        "header": "To get anonfiles link.",
-        "description": "Reply to text message to paste that text on anonfiles you can also pass input along with command \
-            So that to customize title of that anonfiles and reply to media file to get sharable link of that media(atmost 5mb is supported)",
+        "header": "To get telegraph link.",
+        "description": "Reply to text message to paste that text on telegraph you can also pass input along with command \
+            So that to customize title of that telegraph and reply to media file to get sharable link of that media(atmost 5mb is supported)",
         "options": {
-            "m or media": "To get anonfiles link of replied sticker/image/video/gif.",
-            "t or text": "To get anonfiles link of replied text you can use custom title.",
+            "m or media": "To get telegraph link of replied sticker/image/video/gif.",
+            "t or text": "To get telegraph link of replied text you can use custom title.",
         },
         "usage": [
             "{tr}tgm",
             "{tr}tgt <title(optional)>",
-            "{tr}anonfiles media",
-            "{tr}anonfiles text <title(optional)>",
+            "{tr}telegraph media",
+            "{tr}telegraph text <title(optional)>",
         ],
     },
-)
+)  # sourcery no-metrics
 async def _(event):
-    "To get anonfiles link."
-    jokevent = await edit_or_reply(event, "` ⌔︙جـار انشـاء رابـط anonfiles`")
+    "To get telegraph link."
+    jokevent = await edit_or_reply(event, "`processing........`")
+    if BOTLOG:
+        await event.client.send_message(
+            BOTLOG_CHATID,
+            f"Created New Telegraph account {auth_url} for the current session. \n**Do not give this url to anyone, even if they say they are from Telegram!**",
+        )
     optional_title = event.pattern_match.group(5)
     if not event.reply_to_msg_id:
         return await jokevent.edit(
-            "` ⌔︙قـم بالـرد عـلى هـذه الرسـالة للحـصول عـلى رابـط anonfiles فـورا`",
+            "`Reply to a message to get a permanent telegra.ph link.`",
         )
 
     start = datetime.now()
     r_message = await event.get_reply_message()
     input_str = (event.pattern_match.group(4)).strip()
-
-    if input_str in ["ميديا", "m"]:
+    if input_str in ["media", "m"]:
+        downloaded_file_name = await event.client.download_media(
+            r_message, Config.TEMP_DIR
+        )
+        await jokevent.edit(f"`Downloaded to {downloaded_file_name}`")
+        if downloaded_file_name.endswith((".webp")):
+            resize_image(downloaded_file_name)
         try:
-            # تحميل الملف
-            downloaded_file_name = await event.client.download_media(
-                r_message, Config.TEMP_DIR
-            )
-            await jokevent.edit(f"` ⌔︙تـم التحـميل الـى {downloaded_file_name}`")
-
-            # رفع الملف إلى anonfiles
-            file_url = upload_to_anonfiles(downloaded_file_name)
-            if not file_url:
-                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى anonfiles`")
-                os.remove(downloaded_file_name)
-                return
-
-            # حساب الوقت المستغرق
+            media_urls = upload_file(downloaded_file_name)
+        except exceptions.TelegraphException as exc:
+            await jokevent.edit(f"**Error : **\n`{exc}`")
+            os.remove(downloaded_file_name)
+        else:
             end = datetime.now()
             ms = (end - start).seconds
-
-            # إرسال الرابط
-            await jokevent.edit(
-                f"** ⌔︙الـرابـط : **[إضـغط هنـا]({file_url})\
-                    \n** ⌔︙الوقـت المأخـوذ : **`{ms} ثـانيـة.`",
-                link_preview=False,
-            )
-
-            # حذف الملف المؤقت
             os.remove(downloaded_file_name)
-
-        except Exception as e:
-            await jokevent.edit(f"** ⌔︙حـدث خـطأ : **\n`{str(e)}`")
-            if os.path.exists(downloaded_file_name):
-                os.remove(downloaded_file_name)
-
-    elif input_str in ["نص", "t"]:
+            await jokevent.edit(
+                f"**link : **[telegraph](https://graph.org{media_urls[0]})\
+                    \n**Time Taken : **`{ms} seconds.`",
+                link_preview=True,
+            )
+    elif input_str in ["text", "t"]:
         user_object = await event.client.get_entity(r_message.sender_id)
         title_of_page = get_display_name(user_object)
         # apparently, all Users do not have last_name field
@@ -116,19 +118,62 @@ async def _(event):
             os.remove(downloaded_file_name)
         page_content = page_content.replace("\n", "<br>")
         try:
-            # رفع النص إلى anonfiles
-            file_url = upload_to_anonfiles(downloaded_file_name)
-            if not file_url:
-                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى anonfiles`")
-                return
-
-            end = datetime.now()
-            ms = (end - start).seconds
-            await jokevent.edit(
-                f"** ⌔︙الـرابـط : ** [اضغـط هنـا]({file_url})\
-                     \n** ⌔︙الـوقـت المـأخـوذ : **`{ms} ثـانيـة.`",
-                link_preview=False,
-            )
+            response = telegraph.create_page(title_of_page, html_content=page_content)
         except Exception as e:
             LOGS.info(e)
-            await jokevent.edit(f"** ⌔︙حـدث خـطأ : **\n`{str(e)}`")
+            title_of_page = "".join(
+                random.choice(list(string.ascii_lowercase + string.ascii_uppercase))
+                for _ in range(16)
+            )
+            response = telegraph.create_page(title_of_page, html_content=page_content)
+        end = datetime.now()
+        ms = (end - start).seconds
+        joker = f"https://graph.org/{response['path']}"
+        await jokevent.edit(
+            f"**link : ** [telegraph]({joker})\
+                 \n**Time Taken : **`{ms} seconds.`",
+            link_preview=True,
+        )
+
+
+@l313l.ar_cmd(
+    pattern="ctg(?: |$)([\s\S]*)",
+    command=("ctg", plugin_category),
+    info={
+        "header": "Reply to link To get link preview using telegrah.s.",
+        "usage": "{tr}ctg <reply/text>",
+    },
+)
+async def ctg(event):
+    "To get link preview"
+    input_str = event.pattern_match.group(1)
+    reply = await event.get_reply_message()
+    reply_to_id = await reply_id(event)
+    if not input_str and reply:
+        input_str = reply.text
+    if not input_str:
+        return await edit_delete(event, "**ಠ∀ಠ Give me link to search..**", 20)
+    urls = extractor.find_urls(input_str)
+    if not urls:
+        return await edit_delete(event, "**There no link to search in the text..**", 20)
+    chat = "@chotamreaderbot"
+    jokevent = await edit_or_reply(event, "```Processing...```")
+    async with event.client.conversation(chat) as conv:
+        try:
+            msg_flag = await conv.send_message(urls[0])
+        except YouBlockedUserError:
+            await edit_or_reply(
+                jokevent, "**Error:** Trying to unblock & retry, wait a sec..."
+            )
+            await l313l(unblock("chotamreaderbot"))
+            msg_flag = await conv.send_message(urls[0])
+        response = await conv.get_response()
+        await event.client.send_read_acknowledge(conv.chat_id)
+        if response.text.startswith(""):
+            await edit_or_reply(jokevent, "Am I Dumb Or Am I Dumb?")
+        else:
+            await jokevent.delete()
+            await event.client.send_message(
+                event.chat_id, response, reply_to=reply_to_id, link_preview=True
+            )
+        await delete_conv(event, chat, msg_flag)
