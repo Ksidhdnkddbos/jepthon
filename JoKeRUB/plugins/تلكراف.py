@@ -1,26 +1,14 @@
 import os
-import random
-import string
+import requests
 from datetime import datetime
-
-from PIL import Image
 from telethon.utils import get_display_name
-import requests  # إضافة مكتبة requests
-
 from JoKeRUB import l313l
-
 from ..Config import Config
 from ..core.logger import logging
 from ..core.managers import edit_or_reply
-from . import BOTLOG, BOTLOG_CHATID
 
 LOGS = logging.getLogger(__name__)
 plugin_category = "utils"
-
-
-def resize_image(image):
-    im = Image.open(image)
-    im.save(image, "PNG")
 
 
 def upload_to_catbox(file_path):
@@ -30,8 +18,8 @@ def upload_to_catbox(file_path):
     url = "https://catbox.moe/user/api.php"
     try:
         with open(file_path, "rb") as file:
-            files = {"fileToUpload": file}
-            response = requests.post(url, files=files, timeout=10)  # زيادة المهلة إلى 10 ثواني
+            # إرسال الملف مع تحديد نوع الطلب بشكل صحيح
+            response = requests.post(url, files={"fileToUpload": file}, timeout=10)
         if response.status_code == 200:
             return response.text.strip()
         else:
@@ -81,10 +69,6 @@ async def _(event):
                 r_message, Config.TEMP_DIR
             )
             await jokevent.edit(f"` ⌔︙تـم التحـميل الـى {downloaded_file_name}`")
-
-            # إذا كان الملف من نوع .webp، نقوم بتحويله
-            if downloaded_file_name.endswith((".webp")):
-                resize_image(downloaded_file_name)
 
             # رفع الملف إلى catbox.moe
             file_url = upload_to_catbox(downloaded_file_name)
