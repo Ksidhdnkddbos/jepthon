@@ -1,29 +1,72 @@
+import os
+import random
+import string
+from datetime import datetime
+
+from PIL import Image
+from telethon.utils import get_display_name
+import requests  # إضافة مكتبة requests
+
+from JoKeRUB import l313l
+
+from ..Config import Config
+from ..core.logger import logging
+from ..core.managers import edit_or_reply
+from . import BOTLOG, BOTLOG_CHATID
+
+LOGS = logging.getLogger(__name__)
+plugin_category = "utils"
+
+
+def resize_image(image):
+    im = Image.open(image)
+    im.save(image, "PNG")
+
+
+def upload_to_catbox(file_path):
+    """
+    رفع الملف إلى catbox.moe وإرجاع الرابط.
+    """
+    url = "https://catbox.moe/user/api.php"
+    try:
+        with open(file_path, "rb") as file:
+            files = {"fileToUpload": file}
+            response = requests.post(url, files=files)
+        if response.status_code == 200:
+            return response.text.strip()
+        else:
+            return None
+    except Exception as e:
+        LOGS.error(f"حدث خطأ أثناء الرفع إلى catbox.moe: {e}")
+        return None
+
+
 @l313l.ar_cmd(
     pattern="(ت(ل)?ك(راف)?) ?(m|t|ميديا|نص)(?:\s|$)([\s\S]*)",
     command=("تلكراف", plugin_category),
     info={
-        "header": "To get telegraph link.",
-        "description": "Reply to text message to paste that text on telegraph you can also pass input along with command \
-            So that to customize title of that telegraph and reply to media file to get sharable link of that media(atmost 5mb is supported)",
+        "header": "To get catbox link.",
+        "description": "Reply to text message to paste that text on catbox you can also pass input along with command \
+            So that to customize title of that catbox and reply to media file to get sharable link of that media(atmost 5mb is supported)",
         "options": {
-            "m or media": "To get telegraph link of replied sticker/image/video/gif.",
-            "t or text": "To get telegraph link of replied text you can use custom title.",
+            "m or media": "To get catbox link of replied sticker/image/video/gif.",
+            "t or text": "To get catbox link of replied text you can use custom title.",
         },
         "usage": [
             "{tr}tgm",
             "{tr}tgt <title(optional)>",
-            "{tr}telegraph media",
-            "{tr}telegraph text <title(optional)>",
+            "{tr}catbox media",
+            "{tr}catbox text <title(optional)>",
         ],
     },
 )
 async def _(event):
-    "To get telegraph link."
-    jokevent = await edit_or_reply(event, "` ⌔︙جـار انشـاء رابـط تلكـراف`")
+    "To get catbox link."
+    jokevent = await edit_or_reply(event, "` ⌔︙جـار انشـاء رابـط catbox`")
     optional_title = event.pattern_match.group(5)
     if not event.reply_to_msg_id:
         return await jokevent.edit(
-            "` ⌔︙قـم بالـرد عـلى هـذه الرسـالة للحـصول عـلى رابـط تلكـراف فـورا`",
+            "` ⌔︙قـم بالـرد عـلى هـذه الرسـالة للحـصول عـلى رابـط catbox فـورا`",
         )
 
     start = datetime.now()
@@ -42,11 +85,10 @@ async def _(event):
             if downloaded_file_name.endswith((".webp")):
                 resize_image(downloaded_file_name)
 
-            # رفع الملف إلى graph.org
-            try:
-                media_urls = upload_file(downloaded_file_name)
-            except exceptions.TelegraphException as exc:
-                await jokevent.edit(f"** ⌔︙خـطأ : **\n`{exc}`")
+            # رفع الملف إلى catbox.moe
+            file_url = upload_to_catbox(downloaded_file_name)
+            if not file_url:
+                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى catbox.moe`")
                 os.remove(downloaded_file_name)
                 return
 
@@ -54,12 +96,9 @@ async def _(event):
             end = datetime.now()
             ms = (end - start).seconds
 
-            # تغيير النطاق من telegra.ph إلى graph.org
-            media_url = f"https://graph.org{media_urls[0]}"
-
             # إرسال الرابط
             await jokevent.edit(
-                f"** ⌔︙الـرابـط : **[إضـغط هنـا]({media_url})\
+                f"** ⌔︙الـرابـط : **[إضـغط هنـا]({file_url})\
                     \n** ⌔︙الوقـت المأخـوذ : **`{ms} ثـانيـة.`",
                 link_preview=False,
             )
@@ -93,19 +132,19 @@ async def _(event):
             os.remove(downloaded_file_name)
         page_content = page_content.replace("\n", "<br>")
         try:
-            response = telegraph.create_page(title_of_page, html_content=page_content)
+            # رفع النص إلى catbox.moe
+            file_url = upload_to_catbox(downloaded_file_name)
+            if not file_url:
+                await jokevent.edit("** ⌔︙خـطأ : **\n`فشل في رفع الملف إلى catbox.moe`")
+                return
+
+            end = datetime.now()
+            ms = (end - start).seconds
+            await jokevent.edit(
+                f"** ⌔︙الـرابـط : ** [اضغـط هنـا]({file_url})\
+                     \n** ⌔︙الـوقـت المـأخـوذ : **`{ms} ثـانيـة.`",
+                link_preview=False,
+            )
         except Exception as e:
             LOGS.info(e)
-            title_of_page = "".join(
-                random.choice(list(string.ascii_lowercase + string.ascii_uppercase))
-                for _ in range(16)
-            )
-            response = telegraph.create_page(title_of_page, html_content=page_content)
-        end = datetime.now()
-        ms = (end - start).seconds
-        joker = f"https://graph.org/{response['path']}"
-        await jokevent.edit(
-            f"** ⌔︙الـرابـط : ** [اضغـط هنـا]({joker})\
-                 \n** ⌔︙الـوقـت المـأخـوذ : **`{ms} ثـانيـة.`",
-            link_preview=False,
-            )
+            await jokevent.edit(f"** ⌔︙حـدث خـطأ : **\n`{str(e)}`")
