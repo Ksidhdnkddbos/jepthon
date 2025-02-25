@@ -31,10 +31,11 @@ def upload_to_catbox(file_path):
     try:
         with open(file_path, "rb") as file:
             files = {"fileToUpload": file}
-            response = requests.post(url, files=files)
+            response = requests.post(url, files=files, timeout=10)  # زيادة المهلة إلى 10 ثواني
         if response.status_code == 200:
             return response.text.strip()
         else:
+            LOGS.error(f"فشل في الرفع: {response.status_code} - {response.text}")
             return None
     except Exception as e:
         LOGS.error(f"حدث خطأ أثناء الرفع إلى catbox.moe: {e}")
