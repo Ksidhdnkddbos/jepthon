@@ -154,13 +154,14 @@ async def promote(event):
         add_admins=False,
         invite_users=True,
         change_info=False,
-        ban_users=True,
+        ban_users=False,
         delete_messages=True,
         pin_messages=True,
+        manage_call=True,  # إضافة صلاحية بدء المكالمات
     )
     user, rank = await get_user_from_event(event)
     if not rank:
-        rank = "Admin"
+        rank = "admin"
     if not user:
         return
     catevent = await edit_or_reply(event, "**يـتم الرفـع**")
@@ -176,17 +177,15 @@ async def promote(event):
             \nالـمستخـدم: [{user.first_name}](tg://user?id={user.id})\
             \nالـدردشـة: {event.chat.title} (`{event.chat_id}`)",
         )
-
-
 @l313l.ar_cmd(
-    pattern="تنزيل الكل(?:\s|$)([\s\S]*)",
+    pattern="(تنزيل الكل|تك)(?:\s|$)([\s\S]*)",  # يتطابق مع "تنزيل الكل" أو "تك"
     command=("تنزيل الكل", plugin_category),
     info={
-        "الامر": "᯽︙ لتنزيل الشخص كن الاشراف",
+        "الامر": "᯽︙ لتنزيل الشخص من الاشراف",
         "الشرح": "᯽︙ يقوم هذا الامر بحذف جميع صلاحيات المشرف\
             \n᯽︙ ملاحظه :**لازم تكون انت الشخص الي رفعه او تكون مالك المجموعه حتى تنزله**",
         "الاستخدام": [
-            "{tr}تك <الايدي/المعرف/بالرد عليه>",
+            "{tr}تنزيل الكل <الايدي/المعرف/بالرد عليه>",
             "{tr}تك <الايدي/المعرف/بالرد عليه>",
         ],
     },
@@ -206,6 +205,7 @@ async def demote(event):
         ban_users=None,
         delete_messages=None,
         pin_messages=None,
+        manage_call=None,
     )
     rank = "admin"
     try:
