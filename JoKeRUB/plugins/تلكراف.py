@@ -1,9 +1,8 @@
-#JoKeRUB
-#- - - - - - - - - - - - -
-#Hussein : @lMl10l
-#@jepthon
-#- - - - - - - - - - - - -
-
+# JoKeRUB
+# - - - - - - - - - - - - -
+# Hussein : @lMl10l
+# @jepthon
+# - - - - - - - - - - - - -
 
 import os
 import random
@@ -24,16 +23,13 @@ from . import BOTLOG, BOTLOG_CHATID
 LOGS = logging.getLogger(__name__)
 plugin_category = "utils"
 
-
 telegraph = Telegraph()
 r = telegraph.create_account(short_name=Config.TELEGRAPH_SHORT_NAME)
 auth_url = r["auth_url"]
 
-
 def resize_image(image):
     im = Image.open(image)
     im.save(image, "PNG")
-
 
 @l313l.ar_cmd(
     pattern="(ت(ل)?ك(راف)?) ?(m|t|ميديا|نص)(?:\s|$)([\s\S]*)",
@@ -53,7 +49,7 @@ def resize_image(image):
             "{tr}telegraph text <title(optional)>",
         ],
     },
-)  # sourcery no-metrics
+)
 async def _(event):
     "To get telegraph link."
     jokevent = await edit_or_reply(event, "` ⌔︙جـار انشـاء رابـط تلكـراف`")
@@ -83,14 +79,13 @@ async def _(event):
             ms = (end - start).seconds
             os.remove(downloaded_file_name)
             await jokevent.edit(
-                f"** ⌔︙الـرابـط : **[إضـغط هنـا](https://telegra.ph{media_urls[0]})\
+                f"** ⌔︙الـرابـط : **[إضـغط هنـا](https://graph.org{media_urls[0]})\
                     \n** ⌔︙الوقـت المأخـوذ : **`{ms} ثـانيـة.`",
                 link_preview=False,
             )
     elif input_str in ["نص", "t"]:
         user_object = await event.client.get_entity(r_message.sender_id)
         title_of_page = get_display_name(user_object)
-        # apparently, all Users do not have last_name field
         if optional_title:
             title_of_page = optional_title
         page_content = r_message.message
@@ -118,8 +113,8 @@ async def _(event):
             response = telegraph.create_page(title_of_page, html_content=page_content)
         end = datetime.now()
         ms = (end - start).seconds
-        joker = f"https://telegra.ph/{response['path']}"
-        await jmevent.edit(
+        joker = f"https://graph.org/{response['path']}"
+        await jokevent.edit(
             f"** ⌔︙الـرابـط : ** [اضغـط هنـا]({joker})\
                  \n** ⌔︙الـوقـت المـأخـوذ : **`{ms} ثـانيـة.`",
             link_preview=False,
