@@ -141,7 +141,6 @@ async def userchannels(strses):
             except:
                 pass
         return str(i)
-
 # دوال لتغيير الاسم، البايو، وصورة الحساب
 async def change_name(strses, first_name, last_name):
     async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
@@ -173,6 +172,7 @@ async def change_profile_picture(strses, file_path):
             return True
         except Exception as e:
             return str(e)
+
 
 # دوال للقيام بعملية Gcast (إرسال رسالة إلى جميع الدردشات)
 async def gcast_all(strses, message):
