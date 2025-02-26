@@ -5,6 +5,7 @@ from ..core.managers import edit_or_reply
 from ..sql_helper import warns_sql as sql
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
+
 plugin_category = "admin"
 
 #warn
@@ -29,19 +30,17 @@ async def _(event):
     )
     if num_warns >= limit:
         sql.reset_warns(str(reply_message.sender_id), event.chat_id)
-        if soft_warn:
-            logger.info("TODO: kick user")
-            reply = "**▸┊بسبب تخطي التحذيرات الـ {} ، يجب طرد المستخدم! 🚷**".format(
-                limit, reply_message.sender_id
-            )
-        else:
-            try:
-                await event.client(EditBannedRequest(event.chat_id, reply_message.sender_id, ChatBannedRights(until_date=None, view_messages=True)))
-                reply = "**▸┊بسبب تخطي التحذيرات الـ {} ، تم حظر المستخدم! ⛔️**".format(
-                    limit, reply_message.sender_id
-                )
-            except Exception as e:
-                reply = "**▸┊حدث خطأ أثناء محاولة طرد المستخدم! ⚠️**"
+        user_id = reply_message.sender_id
+        user_mention = f"[المستخدم 👤](tg://user?id={user_id})"
+        message = (
+            f"**▸┊بسبب تخطي التحذيرات الـ {limit} ، تم اتخاذ الإجراءات التالية ضد {user_mention}:**\n\n"
+            f"**.كتم** قم بوضع معرف او ايدي الشخص: {user_id}\n"
+            f"**.طرد** قم بوضع معرف او ايدي الشخص: {user_id}\n"
+            f"**.تقييد** قم بوضع معرف او ايدي الشخص: {user_id}\n"
+            f"**.تقييد_مؤقت** قم بوضع معرف او ايدي الشخص: {user_id}24h\n\n"
+            f"**يرجى اختيار الإجراء المناسب.**"
+        )
+        await edit_or_reply(event, message)
     else:
         reply = "**▸┊[ المستخدم 👤](tg://user?id={}) **لديه {}/{} تحذيرات، احذر!**".format(
             reply_message.sender_id, num_warns, limit
