@@ -1,8 +1,8 @@
-import html
+import re
 from telethon import Button, events
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
-from JoKeRUB import l313l
+from JoKeRUB import l313l, bot
 from ..core.managers import edit_or_reply
 from ..sql_helper import warns_sql as sql
 
@@ -126,32 +126,42 @@ async def _(event):
             [Button.inline("كتم 24 ساعة", data="mute_24h")],
             [Button.inline("تقييد 24 ساعة", data="restrict_24h")]
         ]
-        await event.reply("**▸┊لقد وصل المستخدم إلى 3 تحذيرات، اختر الإجراء المناسب:**", buttons=buttons)
+        await event.respond("**▸┊لقد وصل المستخدم إلى 3 تحذيرات، اختر الإجراء المناسب:**", buttons=buttons)
 
 # --- دالة التعامل مع الأزرار ---
 
-@l313l.on(events.CallbackQuery)
-async def handle_button_click(event):
-    # الحصول على بيانات الزر الذي تم النقر عليه
-    data = event.data.decode("utf-8")
-    
-    # الحصول على المستخدم الذي تم الرد عليه
-    reply_message = await event.get_message()
-    user_id = reply_message.reply_to_msg_id  # يمكن تعديل هذا حسب الكود الخاص بك
-    
-    # التعامل مع الأزرار بناءً على البيانات
-    if data == "mute_user":
-        await mute_user(event, user_id)  # كتم دائم
-    elif data == "restrict_user":
-        await restrict_user(event, user_id)  # تقييد دائم
-    elif data == "ban_user":
-        await ban_user(event, user_id)  # حظر
-    elif data == "kick_user":
-        await kick_user(event, user_id)  # طرد
-    elif data == "mute_24h":
-        await mute_user(event, user_id, duration=86400)  # كتم لمدة 24 ساعة
-    elif data == "restrict_24h":
-        await restrict_user(event, user_id, duration=86400)  # تقييد لمدة 24 ساعة
-    
-    # تأكيد النقر على الزر
-    await event.answer()
+@l313l.tgbot.on(CallbackQuery(data=re.compile(rb"mute_user")))
+async def mute_user_callback(event):
+    user_id = event.sender_id
+    await mute_user(event, user_id)
+    await event.answer("تم كتم المستخدم.")
+
+@l313l.tgbot.on(CallbackQuery(data=re.compile(rb"restrict_user")))
+async def restrict_user_callback(event):
+    user_id = event.sender_id
+    await restrict_user(event, user_id)
+    await event.answer("تم تقييد المستخدم.")
+
+@l313l.tgbot.on(CallbackQuery(data=re.compile(rb"ban_user")))
+async def ban_user_callback(event):
+    user_id = event.sender_id
+    await ban_user(event, user_id)
+    await event.answer("تم حظر المستخدم.")
+
+@l313l.tgbot.on(CallbackQuery(data=re.compile(rb"kick_user")))
+async def kick_user_callback(event):
+    user_id = event.sender_id
+    await kick_user(event, user_id)
+    await event.answer("تم طرد المستخدم.")
+
+@l313l.tgbot.on(CallbackQuery(data=re.compile(rb"mute_24h")))
+async def mute_24h_callback(event):
+    user_id = event.sender_id
+    await mute_user(event, user_id, duration=86400)  # كتم لمدة 24 ساعة
+    await event.answer("تم كتم المستخدم لمدة 24 ساعة.")
+
+@l313l.tgbot.on(CallbackQuery(data=re.compile(rb"restrict_24h")))
+async def restrict_24h_callback(event):
+    user_id = event.sender_id
+    await restrict_user(event, user_id, duration=86400)  # تقييد لمدة 24 ساعة
+    await event.answer("تم تقييد المستخدم لمدة 24 ساعة.")
