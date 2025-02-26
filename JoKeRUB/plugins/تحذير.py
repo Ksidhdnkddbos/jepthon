@@ -1,8 +1,9 @@
+import html  # أضف هذا السطر
 import re
 from telethon import Button, events
 from telethon.tl.functions.channels import EditBannedRequest
 from telethon.tl.types import ChatBannedRights
-from JoKeRUB import l313l, bot
+from JoKeRUB import l313l
 from ..core.managers import edit_or_reply
 from ..sql_helper import warns_sql as sql
 
