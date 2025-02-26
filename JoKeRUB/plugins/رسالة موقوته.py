@@ -1,6 +1,7 @@
 from asyncio import sleep
 from JoKeRUB import l313l
 from JoKeRUB.core.logger import logging
+from telethon import events
 
 plugin_category = "tools"
 LOGS = logging.getLogger(__name__)
