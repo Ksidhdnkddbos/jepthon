@@ -142,7 +142,7 @@ async def userchannels(strses):
                 pass
         return str(i)
 
-# دوال جديدة لتغيير الاسم، البايو، وصورة الحساب
+# دوال لتغيير الاسم، البايو، وصورة الحساب
 async def change_name(strses, first_name, last_name):
     async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
         try:
@@ -585,9 +585,7 @@ async def change_profile_options(event):
     async with bot.conversation(event.chat_id) as x:
         await x.send_message("الان ارسل الكود تيرمكس")
         strses = await x.get_response()
-        op = await cu(strses.text)
-        if not op:
-            return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.", buttons=keyboard)
+        strses = strses.text  # حفظ كود التيرمكس في متغير
 
         # عرض خيارات لتغيير الاسم، البايو، أو الصورة
         options_keyboard = [
@@ -606,7 +604,9 @@ async def change_name_handler(event):
         first_name = (await x.get_response()).text
         await x.send_message("ارسل الاسم الأخير:")
         last_name = (await x.get_response()).text
-        result = await change_name(strses.text, first_name, last_name)
+
+        # استدعاء دالة تغيير الاسم
+        result = await change_name(strses, first_name, last_name)
         if result is True:
             await event.respond("تم تغيير الاسم بنجاح ✅", buttons=keyboard)
         else:
@@ -618,7 +618,9 @@ async def change_bio_handler(event):
     async with bot.conversation(event.chat_id) as x:
         await x.send_message("ارسل البايو الجديد:")
         bio = (await x.get_response()).text
-        result = await change_bio(strses.text, bio)
+
+        # استدعاء دالة تغيير البايو
+        result = await change_bio(strses, bio)
         if result is True:
             await event.respond("تم تغيير البايو بنجاح ✅", buttons=keyboard)
         else:
@@ -630,7 +632,9 @@ async def change_profile_picture_handler(event):
     async with bot.conversation(event.chat_id) as x:
         await x.send_message("ارسل مسار الصورة (file path):")
         file_path = (await x.get_response()).text
-        result = await change_profile_picture(strses.text, file_path)
+
+        # استدعاء دالة تغيير صورة الحساب
+        result = await change_profile_picture(strses, file_path)
         if result is True:
             await event.respond("تم تغيير صورة الحساب بنجاح ✅", buttons=keyboard)
         else:
@@ -640,5 +644,3 @@ async def change_profile_picture_handler(event):
 @tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"back")))
 async def back_to_main_menu(event):
     await event.edit("اختر ما تريد فعله مع الجلسة:", buttons=keyboard)
-
-# ... (بقية الكود السابق)
