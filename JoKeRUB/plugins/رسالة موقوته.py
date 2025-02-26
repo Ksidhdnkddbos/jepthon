@@ -37,8 +37,8 @@ async def disable_auto_delete(event):
     await event.edit("**⌔︙ تم تعطيل المسح التلقائي للرسائل.**")
 
 @l313l.ar_cmd(
-    pattern="مسح_تلقائي (\d*) ([\s\S]*)",
-    command=("مسح_تلقائي", plugin_category),
+    pattern="مؤقت (\d*) ([\s\S]*)",
+    command=("مؤقت", plugin_category),
     info={
         "شـرح": "لأرسـال رسـالة وسـيتم حذفها بعـد وقت معيـن انت تضعـه",
         "⌔︙أسـتخدام": "{tr}مسح_تلقائي [الوقت] [النص]",
