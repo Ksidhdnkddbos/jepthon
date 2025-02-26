@@ -107,27 +107,12 @@ async def _(event):
     num_warns, reasons = sql.warn_user(
         str(reply_message.sender_id), event.chat_id, warn_reason
     )
-    if num_warns >= limit:
-        sql.reset_warns(str(reply_message.sender_id), event.chat_id)
-        if soft_warn:
-            logger.info("TODO: kick user")
-            reply = "**▸┊بسبب تخطي التحذيرات الـ {} ، يجب طرد المستخدم! 🚷**".format(
-                limit, reply_message.sender_id
-            )
-        else:
-            try:
-                await event.client(EditBannedRequest(event.chat_id, reply_message.sender_id, ChatBannedRights(until_date=None, view_messages=True)))
-                reply = "**▸┊بسبب تخطي التحذيرات الـ {} ، تم حظر المستخدم! ⛔️**".format(
-                    limit, reply_message.sender_id
-                )
-            except Exception as e:
-                reply = "**▸┊حدث خطأ أثناء محاولة طرد المستخدم! ⚠️**"
-    else:
-        reply = "**▸┊[ المستخدم 👤](tg://user?id={}) **لديه {}/{} تحذيرات، احذر!**".format(
-            reply_message.sender_id, num_warns, limit
-        )
-        if warn_reason:
-            reply += "\n▸┊سبب التحذير الأخير \n{}".format(html.escape(warn_reason))
+    
+    reply = "**▸┊[ المستخدم 👤](tg://user?id={}) **لديه {}/{} تحذيرات، احذر!**".format(
+        reply_message.sender_id, num_warns, limit
+    )
+    if warn_reason:
+        reply += "\n▸┊سبب التحذير الأخير \n{}".format(html.escape(warn_reason))
     
     await edit_or_reply(event, reply)
 
