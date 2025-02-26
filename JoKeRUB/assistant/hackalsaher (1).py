@@ -1,8 +1,8 @@
-from SHRU import bot, Qrh9
+from JoKeRUB import bot, l313l
 #By Source saher @SXYO3
 from telethon import events, functions, types, Button
 from datetime import timedelta
-from SHRU.utils import admin_cmd
+from JoKeRUB.utils import admin_cmd
 import asyncio
 from ..Config import Config
 import os, asyncio, re
