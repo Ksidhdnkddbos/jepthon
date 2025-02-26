@@ -5,73 +5,79 @@ from JoKeRUB.core.logger import logging
 plugin_category = "tools"
 LOGS = logging.getLogger(__name__)
 
-# متغير لتحديد ما إذا كان المسح التلقائي مفعلًا أم لا
-auto_delete_enabled = False
+# متغير لتخزين الوقت المحدد لحذف الرسائل
+delete_delay = None
 
-@l313l.ar_cmd(
-    pattern="تفعيل_المسح_التلقائي",
-    command=("تفعيل_المسح_التلقائي", plugin_category),
-    info={
-        "شـرح": "لتـفعيل المسـح التلقـائي للرسـائل",
-        "⌔︙أسـتخدام": "{tr}تفعيل_المسح_التلقائي",
-    },
-)
-async def enable_auto_delete(event):
-    "لتـفعيل المسـح التلقـائي للرسـائل"
-    global auto_delete_enabled
-    auto_delete_enabled = True
-    await event.edit("**⌔︙ تم تفعيل المسح التلقائي للرسائل.**")
-
-@l313l.ar_cmd(
-    pattern="تعطيل_المسح_التلقائي",
-    command=("تعطيل_المسح_التلقائي", plugin_category),
-    info={
-        "شـرح": "لتـعطيل المسـح التلقـائي للرسـائل",
-        "⌔︙أسـتخدام": "{tr}تعطيل_المسح_التلقائي",
-    },
-)
-async def disable_auto_delete(event):
-    "لتـعطيل المسـح التلقـائي للرسـائل"
-    global auto_delete_enabled
-    auto_delete_enabled = False
-    await event.edit("**⌔︙ تم تعطيل المسح التلقائي للرسائل.**")
-
+# ----------------------------------------
+# الأمر: مؤقت (لحذف رسالة واحدة بعد وقت محدد)
+# ----------------------------------------
 @l313l.ar_cmd(
     pattern="مؤقت (\d*) ([\s\S]*)",
     command=("مؤقت", plugin_category),
     info={
-        "شـرح": "لأرسـال رسـالة وسـيتم حذفها بعـد وقت معيـن انت تضعـه",
-        "⌔︙أسـتخدام": "{tr}مسح_تلقائي [الوقت] [النص]",
-        "᯽︙ امثـلة": "{tr}مسح_تلقائي 10 ههلا",
+        "شـرح": "لأرسـال رسـالة موقوتة وحـذفها بعـد وقت معيـن انت تضعـه",
+        "⌔︙أسـتخدام": "{tr}مؤقت [الوقت] [النص]",
+        "᯽︙ امثـلة": "{tr}مؤقت 10 ههلا",
     },
 )
-async def auto_delete_message(event):
-    "لأرسـال رسـالة وسـيتم حذفها بعـد وقت معيـن"
-    global auto_delete_enabled
-    if not auto_delete_enabled:
-        await event.edit("**⌔︙ المسح التلقائي غير مفعل. يرجى تفعيله أولاً.**")
-        return
-    
-    cat = ("".join(event.text.split(maxsplit=1)[1:])).split(" ", 1)
+async def selfdestruct(destroy):
+    "لأرسـال رسـالة مـوقوتة"
+    cat = ("".join(destroy.text.split(maxsplit=1)[1:])).split(" ", 1)
     message = cat[1]
     ttl = int(cat[0])
-    await event.delete()
-    smsg = await event.client.send_message(event.chat_id, message)
+    await destroy.delete()
+    smsg = await destroy.client.send_message(destroy.chat_id, message)
     await sleep(ttl)
     await smsg.delete()
 
+# ----------------------------------------
+# الأمر: ضبط_المؤقت (لحذف جميع الرسائل بعد وقت محدد)
+# ----------------------------------------
 @l313l.ar_cmd(
-    pattern="حذف_الرسائل_القديمة",
-    command=("حذف_الرسائل_القديمة", plugin_category),
+    pattern="ضبط_المؤقت (\d+)",
+    command=("ضبط_المؤقت", plugin_category),
     info={
-        "شـرح": "لحـذف جميع الرسـائل التي تم إرسالها بواسطة البوت",
-        "⌔︙أسـتخدام": "{tr}حذف_الرسائل_القديمة",
+        "شـرح": "لضبط الوقت الذي ستُحذف بعده جميع الرسائل تلقائيًا",
+        "⌔︙أسـتخدام": "{tr}ضبط_المؤقت [الوقت بالثواني]",
+        "᯽︙ امثـلة": "{tr}ضبط_المؤقت 10",
     },
 )
-async def delete_old_messages(event):
-    "لحـذف جميع الرسـائل التي تم إرسالها بواسطة البوت"
-    await event.edit("**⌔︙ جاري حذف الرسائل القديمة...**")
-    async for message in event.client.iter_messages(event.chat_id, from_user="me"):
-        await message.delete()
-        await sleep(1)  # لتجنب حظر الحساب بسبب كثرة الطلبات
-    await event.edit("**⌔︙ تم حذف جميع الرسائل القديمة بنجاح.**")
+async def set_auto_delete_timer(event):
+    "لضبط الوقت الذي ستُحذف بعده جميع الرسائل تلقائيًا"
+    global delete_delay
+    try:
+        delete_delay = int(event.pattern_match.group(1))
+        await event.edit(f"**⌔︙ تم ضبط المؤقت لـ {delete_delay} ثانية. سيتم حذف جميع الرسائل بعد هذا الوقت.**")
+    except ValueError:
+        await event.edit("**⌔︙ يرجى إدخال رقم صحيح للوقت.**")
+
+# ----------------------------------------
+# الأمر: تعطيل_المؤقت (لإيقاف حذف الرسائل التلقائي)
+# ----------------------------------------
+@l313l.ar_cmd(
+    pattern="تعطيل_المؤقت",
+    command=("تعطيل_المؤقت", plugin_category),
+    info={
+        "شـرح": "لتعطيل المؤقت وحذف الرسائل التلقائي",
+        "⌔︙أسـتخدام": "{tr}تعطيل_المؤقت",
+    },
+)
+async def disable_auto_delete(event):
+    "لتعطيل المؤقت وحذف الرسائل التلقائي"
+    global delete_delay
+    delete_delay = None
+    await event.edit("**⌔︙ تم تعطيل المؤقت. لن يتم حذف الرسائل تلقائيًا.**")
+
+# ----------------------------------------
+# الوظيفة التلقائية لحذف الرسائل
+# ----------------------------------------
+@l313l.on(events.NewMessage(outgoing=True))
+async def auto_delete_messages(event):
+    "لحذف الرسائل تلقائيًا بعد الوقت المحدد"
+    global delete_delay
+    if delete_delay is not None:
+        await sleep(delete_delay)
+        try:
+            await event.delete()
+        except Exception as e:
+            LOGS.error(f"حدث خطأ أثناء حذف الرسالة: {e}")
