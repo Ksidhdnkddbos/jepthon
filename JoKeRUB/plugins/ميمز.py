@@ -75,11 +75,34 @@ async def aljoker313(joker313):
   await joker313.client.send_file(joker313.chat_id,url,caption="᯽︙ Dev : @Lx5x5 .",parse_mode="html")
   await joker313.delete()
 
+# متغير لتخزين حالة التفعيل
+poem_enabled = False
+
+# أمر تفعيل الشعر
+@l313l.on(events.NewMessage(pattern="^\.تفعيل الشعر$"))
+async def enable_poem(event):
+    global poem_enabled
+    poem_enabled = True
+    await event.reply("تم تفعيل الشعر بنجاح! الآن البوت سيرد على أي شخص يكتب `.شعر`.")
+
+# أمر إلغاء تفعيل الشعر
+@l313l.on(events.NewMessage(pattern="^\.إلغاء تفعيل الشعر$"))
+async def disable_poem(event):
+    global poem_enabled
+    poem_enabled = False
+    await event.reply("تم إلغاء تفعيل الشعر بنجاح! الآن البوت لن يرد على الآخرين عند كتابة `.شعر`.")
+
 # تعريف الحدث للرد على أي شخص يكتب .شعر
-@l313l.on(events.NewMessage(pattern="^.شعر$"))
+@l313l.on(events.NewMessage(pattern="^\.شعر$"))
 async def send_poem(event):
+    global poem_enabled
+    
     # التأكد من أن الرسالة ليست من البوت نفسه
     if event.sender_id == (await event.client.get_me()).id:
+        return
+    
+    # إذا لم يتم تفعيل الشعر، يرد البوت فقط إذا كنت أنت من كتب الأمر
+    if not poem_enabled and event.sender_id != (await event.client.get_me()).id:
         return
     
     try:
