@@ -75,6 +75,9 @@ async def aljoker313(joker313):
   await joker313.client.send_file(joker313.chat_id,url,caption="᯽︙ Dev : @Lx5x5 .",parse_mode="html")
   await joker313.delete()
 
+import random
+from telethon import events
+
 # متغير لتخزين حالة التفعيل
 poem_enabled = False
 
@@ -97,12 +100,14 @@ async def disable_poem(event):
 async def send_poem(event):
     global poem_enabled
     
-    # التأكد من أن الرسالة ليست من البوت نفسه
-    if event.sender_id == (await event.client.get_me()).id:
-        return
+    # الحصول على معرف المستخدم الخاص بك
+    my_id = (await event.client.get_me()).id
     
-    # إذا لم يتم تفعيل الشعر، يرد البوت فقط إذا كنت أنت من كتب الأمر
-    if not poem_enabled and event.sender_id != (await event.client.get_me()).id:
+    # إذا كان المرسل هو البوت نفسه (أنت)، يرد دائمًا
+    if event.sender_id == my_id:
+        pass  # يستمر في تنفيذ الكود
+    # إذا كان المرسل شخصًا آخر، يرد فقط إذا كان الشعر مفعلًا
+    elif not poem_enabled:
         return
     
     try:
