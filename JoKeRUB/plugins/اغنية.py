@@ -7,6 +7,7 @@ import os
 import random
 from pathlib import Path
 from yt_dlp import YoutubeDL
+from YoutubeSearch import YoutubeSearch
 from ShazamAPI import Shazam
 from telethon import types
 from telethon.errors.rpcerrorlist import YouBlockedUserError, ChatSendMediaForbiddenError
