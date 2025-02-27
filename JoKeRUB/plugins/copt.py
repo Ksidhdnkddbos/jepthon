@@ -49,7 +49,6 @@ from telethon.errors import (
 )
 from . import bot, l313l
 from ..Config import Config
-from ..utils import Zed_Vip
 from ..core.managers import edit_delete, edit_or_reply
 
         
@@ -60,7 +59,7 @@ bot = borg = tgbot
 API_ID = "22256614"
 API_HASH = "4f9f53e287de541cf0ed81e12a68fa3b"
 admin = Config.OWNER_ID
-ZThonDev = (5746412340, 5003461173, 6227985448, 2095357462)
+ZThonDev = (5427469031, 5003461173, 6227985448, 2095357462)
 
 #Create DataBase
 db = uu('database/elhakem.ss', 'bot')
@@ -1044,16 +1043,22 @@ async def controol(event):
     botusername = Config.TG_BOT_USERNAME
     return await edit_or_reply(event, f"**- لـ الدخـول لـ قسـم التحكـم 🕹**\n**- الخـاص بالبـوات المسـاعـد الخاص بك 💡**\n**- قم بالذهـاب الى البوت {botusername}**\n**- ثم ارسـل الامـر (** `/control` **)**")
 
-@tgbot.on(events.NewMessage(pattern="/control", func = lambda x: x.is_private))
+admin = 5427469031  # استبدل هذا بمعرف المستخدم الخاص بك
+
+@client.on(events.NewMessage(pattern="/control", func=lambda x: x.is_private))
 async def gift(event):
     user_id = event.sender_id
     chat = await event.get_chat()
     mention = f"[{chat.first_name}](tg://user?id={chat.id})"
-    #if admin not in Zed_Vip:
-        #return await edit_or_reply(event, "**⎉╎عـذࢪاً .. ؏ـزيـزي\n⎉╎هـذا الامـر ليـس مجـانـي📵\n⎉╎للاشتـراك في الاوامـر المدفوعـة\n⎉╎تواصـل مطـور السـورس @BBBlibot\n⎉╎او التواصـل مـع احـد المشرفيـن @AAAl1l**")
+    
     if user_id == admin:
         bans = db.get('bad_guys') if db.exists('bad_guys') else []
-        async with bot.conversation(event.chat_id) as x:
+        async with client.conversation(event.chat_id) as x:
+            await x.send_message("أنت المسؤول ويمكنك التحكم بالبوت.")
+    else:
+        await event.reply("**⎉╎عـذࢪاً .. ؏ـزيـزي\n⎉╎هـذا الامـر ليـس مجـانـي📵\n⎉╎للاشتـراك في الاوامـر المدفوعـة\n⎉╎تواصـل مطـور السـورس @BBBlibot\n⎉╎او التواصـل مـع احـد المشرفيـن @AAAl1l**")
+
+client.run_until_disconnected()
             buttons = [
                 [
                     Button.inline("عدد حسابات البوت ♾", data="lllget_accounts_count"),
