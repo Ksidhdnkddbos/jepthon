@@ -25,7 +25,7 @@ plugin_category = "utils"
 LOGS = logging.getLogger(__name__)
 
 # =========================================================== #
-#                           STRINGS                           #
+#                           STRINGS                          #
 # =========================================================== #
 SONG_SEARCH_STRING = "<code>يجؤة الانتظار قليلا يتم البحث على المطلوب</code>"
 SONG_NOT_FOUND = "<code>عذرا لا يمكنني ايجاد اي اغنيه مثل هذه</code>"
@@ -33,7 +33,6 @@ SONG_SENDING_STRING = "<code>جارِ الارسال انتظر قليلا...</c
 # =========================================================== #
 #                                                             #
 # =========================================================== #
-
 # دالة للحصول على ملف الكوكيز
 def get_cookies_file():
     folder_path = os.path.join(os.getcwd(), "karar")  # المسار إلى مجلد zion
@@ -85,9 +84,10 @@ async def _(event):
         ydl_opts = {
             'cookiefile': cookie_file,  # استخدام ملف الكوكيز
             'extract_flat': True,
+            'quiet': True,  # تقليل الإخراج لتسريع العملية
         }
         with YoutubeDL(ydl_opts) as ydl:
-            search_results = ydl.extract_info(f"ytsearch:{query}", download=False)
+            search_results = ydl.extract_info(f"ytsearch1:{query}", download=False)  # البحث عن نتيجة واحدة فقط
             video_link = search_results['entries'][0]['url']  # الحصول على رابط الفيديو الأول
     except Exception as e:
         return await catevent.edit(f"❌ فشل البحث: {str(e)}")
@@ -107,6 +107,8 @@ async def _(event):
                 'preferredquality': q,
             }],
             'outtmpl': f"{os.getcwd()}/temp/%(title)s.%(ext)s",  # حفظ الملف في مجلد temp
+            'quiet': True,  # تقليل الإخراج لتسريع العملية
+            'no_warnings': True,  # إخفاء التحذيرات
         }
         with YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(video_link, download=True)
@@ -133,6 +135,8 @@ async def _(event):
         # تنظيف الملفات المؤقتة
         if os.path.exists(song_file):
             os.remove(song_file)
+
+
 
 
 @l313l.ar_cmd(
