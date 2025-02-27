@@ -37,13 +37,13 @@ SONG_SENDING_STRING = "<code>جارِ الارسال انتظر قليلا...</c
 # =========================================================== #
 # دالة للحصول على ملف الكوكيز
 def get_cookies_file():
-    folder_path = os.path.join(os.getcwd(), "zion")  # المسار إلى مجلد zion
+    folder_path = os.path.join(os.getcwd(), "karar")  # المسار إلى مجلد zion
     if not os.path.exists(folder_path):
-        raise FileNotFoundError("Folder 'zion' not found in current directory")
+        raise FileNotFoundError("Folder 'karar' not found in current directory")
         
     txt_files = glob.glob(os.path.join(folder_path, '*.txt'))  # البحث عن ملفات txt
     if not txt_files:
-        raise FileNotFoundError("No .txt cookies files found in 'zion' folder")
+        raise FileNotFoundError("No .txt cookies files found in 'karar' folder")
         
     return random.choice(txt_files)  # اختيار ملف كوكيز عشوائي
 
