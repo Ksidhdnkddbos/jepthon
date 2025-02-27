@@ -84,7 +84,7 @@ async def send_poem(event):
     
     try:
         # رقم عشوائي بين 2 و 101
-        rl = random.randint(2, 101)
+        rl = random.randint(4, 67)
         
         # رابط الملف العشوائي من القناة
         url = f"https://t.me/Lx1x2/{rl}"
