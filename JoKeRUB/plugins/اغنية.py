@@ -1,10 +1,12 @@
 import asyncio
+import glob
 import base64
 import io
 import urllib.parse
 import os
+import random
 from pathlib import Path
-
+from yt_dlp import YoutubeDL
 from ShazamAPI import Shazam
 from telethon import types
 from telethon.errors.rpcerrorlist import YouBlockedUserError, ChatSendMediaForbiddenError
@@ -32,6 +34,18 @@ SONG_SENDING_STRING = "<code>جارِ الارسال انتظر قليلا...</c
 #                                                             #
 # =========================================================== #
 
+# دالة للحصول على ملف الكوكيز
+def get_cookies_file():
+    folder_path = os.path.join(os.getcwd(), "karar")  # المسار إلى مجلد zion
+    if not os.path.exists(folder_path):
+        raise FileNotFoundError("Folder 'karar' not found in current directory")
+        
+    txt_files = glob.glob(os.path.join(folder_path, '*.txt'))  # البحث عن ملفات txt
+    if not txt_files:
+        raise FileNotFoundError("No .txt cookies files found in 'karar' folder")
+        
+    return random.choice(txt_files)  # اختيار ملف كوكيز عشوائي
+
 @l313l.ar_cmd(
     pattern="بحث(320)?(?:\s|$)([\s\S]*)",
     command=("بحث", plugin_category),
@@ -49,68 +63,76 @@ async def _(event):
     "To search songs"
     reply_to_id = await reply_id(event)
     reply = await event.get_reply_message()
+    
+    # الحصول على الاستعلام للبحث
     if event.pattern_match.group(2):
         query = event.pattern_match.group(2)
     elif reply and reply.message:
         query = reply.message
     else:
         return await edit_or_reply(event, "⌔∮ يرجى الرد على ما تريد البحث عنه")
-    cat = base64.b64decode("YnkybDJvRG04WEpsT1RBeQ==")
+    
     catevent = await edit_or_reply(event, "⌔∮ جاري البحث عن المطلوب انتظر")
-    video_link = await yt_search(str(query))
-    if not url(video_link):
-        return await catevent.edit(
-            f"⌔∮ عذرا لم استطع ايجاد مقاطع ذات صلة بـ `{query}`"
-        )
+    
+    try:
+        # الحصول على ملف الكوكيز
+        cookie_file = get_cookies_file()
+    except Exception as e:
+        return await catevent.edit(f"❌ خطأ في الكوكيز: {str(e)}")
+    
+    # البحث عن الفيديو
+    try:
+        ydl_opts = {
+            'cookiefile': cookie_file,  # استخدام ملف الكوكيز
+            'extract_flat': True,
+        }
+        with YoutubeDL(ydl_opts) as ydl:
+            search_results = ydl.extract_info(f"ytsearch:{query}", download=False)
+            video_link = search_results['entries'][0]['url']  # الحصول على رابط الفيديو الأول
+    except Exception as e:
+        return await catevent.edit(f"❌ فشل البحث: {str(e)}")
+    
+    # تحديد جودة الصوت
     cmd = event.pattern_match.group(1)
     q = "320k" if cmd == "320" else "128k"
-    song_cmd = song_dl.format(QUALITY=q, video_link=video_link)
-    name_cmd = name_dl.format(video_link=video_link)
+    
+    # تنزيل المقطع الصوتي
     try:
-        cat = Get(cat)
-        await event.client(cat)
-    except BaseException:
-        pass
-    try:
-        stderr = (await _catutils.runcmd(song_cmd))[1]
-        # if stderr:
-        # await catevent.edit(f"**خطأ :** `{stderr}`")
-        catname, stderr = (await _catutils.runcmd(name_cmd))[:2]
-        if stderr:
-            return await catevent.edit(f"**خطأ :** `{stderr}`")
-        catname = os.path.splitext(catname)[0]
-        song_file = Path(f"{catname}.mp3")
-        catname = urllib.parse.unquote(catname)
-    except:
-        pass
-    if not os.path.exists(song_file):
-        return await catevent.edit(
-            f"⌔∮ عذرا لم استطع ايجاد مقاطع ذات صله بـ `{query}`"
-        )
+        ydl_opts = {
+            'cookiefile': cookie_file,  # استخدام ملف الكوكيز
+            'format': 'bestaudio/best',
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': q,
+            }],
+            'outtmpl': f"{os.getcwd()}/temp/%(title)s.%(ext)s",  # حفظ الملف في مجلد temp
+        }
+        with YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(video_link, download=True)
+            song_file = ydl.prepare_filename(info_dict).replace('.webm', '.mp3')  # تغيير الامتداد إلى mp3
+            title = info_dict.get('title', 'Unknown Title')  # الحصول على عنوان الفيديو
+    except Exception as e:
+        return await catevent.edit(f"❌ فشل التنزيل: {str(e)}")
+    
+    # إرسال الملف
     await catevent.edit("**⌔∮ جارِ الارسال انتظر قليلاً**")
-    catthumb = Path(f"{catname}.jpg")
-    if not os.path.exists(catthumb):
-        catthumb = Path(f"{catname}.webp")
-    elif not os.path.exists(catthumb):
-        catthumb = None
-    title = catname.replace("./temp/", "").replace("_", "|")
     try:
         await event.client.send_file(
             event.chat_id,
             song_file,
             force_document=False,
             caption=f"**العنوان:** `{title}`",
-            thumb=catthumb,
             supports_streaming=True,
             reply_to=reply_to_id,
         )
         await catevent.delete()
-        for files in (catthumb, song_file):
-            if files and os.path.exists(files):
-                os.remove(files)
-    except ChatSendMediaForbiddenError as err:
-        await catevent.edit("لا يمكن ارسال المقطع الصوتي هنا")
-        LOGS.error(str(err))
+    except Exception as e:
+        await catevent.edit(f"❌ فشل الإرسال: {str(e)}")
+    finally:
+        # تنظيف الملفات المؤقتة
+        if os.path.exists(song_file):
+            os.remove(song_file)
 
 
 @l313l.ar_cmd(
