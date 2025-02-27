@@ -47,7 +47,7 @@ from telethon.errors import (
     SessionPasswordNeededError,
     PasswordHashInvalidError
 )
-from . import bot, zedub
+from . import bot, l313l
 from ..Config import Config
 from ..utils import Zed_Vip
 from ..core.managers import edit_delete, edit_or_reply
