@@ -79,7 +79,9 @@ def remove_if_exists(path): #Code by T.me/zzzzl1l
         os.remove(path)
 
 #Code by T.me/zzzzl1l
-@l313l.ar_cmd(pattern="بحث(?: |$)(.*)")
+@l313l.ar_cmd(
+    pattern="بحث(?:\s|$)([\s\S]*)",
+    command=("بحث", plugin_category),
 async def _(event): #Code by T.me/zzzzl1l
     reply = await event.get_reply_message()
     if event.pattern_match.group(1):
@@ -128,7 +130,7 @@ async def _(event): #Code by T.me/zzzzl1l
         for i in range(len(dur_arr) - 1, -1, -1):
             dur += int(float(dur_arr[i])) * secmul
             secmul *= 60
-        await zedevent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
+        await event.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
         await event.client.send_file(
             event.chat_id,
             audio_file,
@@ -136,7 +138,7 @@ async def _(event): #Code by T.me/zzzzl1l
             caption=f"**⎉╎البحث :** `{title}`",
             thumb=thumb_name,
         )
-        await zedevent.delete()
+        await event.delete()
     except ChatSendMediaForbiddenError as err: # Code By T.me/zzzzl1l
         await event.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
         LOGS.error(str(err))
