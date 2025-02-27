@@ -1,23 +1,53 @@
 import asyncio
-import base64
+import glob
+import contextlib
 import io
-import urllib.parse
 import os
+import re
+import pathlib
+from time import time
+import requests
+import random
 from pathlib import Path
 
+import aiohttp
+import aiofiles
+import wget
+import yt_dlp
+from yt_dlp import YoutubeDL
+from youtube_search import YoutubeSearch
 from ShazamAPI import Shazam
-from telethon import types
-from telethon.errors.rpcerrorlist import YouBlockedUserError, ChatSendMediaForbiddenError
-from telethon.tl.functions.contacts import UnblockRequest as unblock
-from telethon.tl.functions.messages import ImportChatInviteRequest as Get
 from validators.url import url
 
-from ..core.logger import logging
+from urlextract import URLExtract
+from wget import download
+from yt_dlp import YoutubeDL
+from yt_dlp.utils import (
+    ContentTooShortError,
+    DownloadError,
+    ExtractorError,
+    GeoRestrictedError,
+    MaxDownloadsReached,
+    PostProcessingError,
+    UnavailableVideoError,
+    XAttrMetadataError,
+)
+
+from telethon import events
+from telethon.tl import types
+from telethon.utils import get_attributes
+from telethon.errors.rpcerrorlist import YouBlockedUserError, ChatSendMediaForbiddenError
+from telethon.tl.functions.contacts import UnblockRequest as unblock
+
+from ..Config import Config
+from ..core import poolfrom ..core.logger import logging
 from ..core.managers import edit_delete, edit_or_reply
+from ..helpers import progress, reply_id
 from ..helpers.functions import delete_conv, name_dl, song_dl, video_dl, yt_search
+from ..helpers.functions.utube import _mp3Dl, get_yt_video_id, get_ytthumb, ytsearch
 from ..helpers.tools import media_type
-from ..helpers.utils import _catutils, reply_id
-from . import l313l
+from ..helpers.utils import _format, reply_id, _utils
+from . import BOTLOG, BOTLOG_CHATID, l313l
 
 plugin_category = "utils"
 LOGS = logging.getLogger(__name__)
@@ -32,85 +62,92 @@ SONG_SENDING_STRING = "<code>جارِ الارسال انتظر قليلا...</c
 #                                                             #
 # =========================================================== #
 
-@l313l.ar_cmd(
-    pattern="بحث(320)?(?:\s|$)([\s\S]*)",
-    command=("بحث", plugin_category),
-    info={
-        "header": "To get songs from youtube.",
-        "description": "Basically this command searches youtube and send the first video as audio file.",
-        "flags": {
-            "320": "if you use song320 then you get 320k quality else 128k quality",
-        },
-        "usage": "{tr}song <song name>",
-        "examples": "{tr}song memories song",
-    },
-)
-async def _(event):
-    "To search songs"
-    reply_to_id = await reply_id(event)
+def get_cookies_file():
+    folder_path = f"{os.getcwd()}/karar"
+    txt_files = glob.glob(os.path.join(folder_path, '*.txt'))
+    if not txt_files:
+        raise FileNotFoundError("No .txt files found in the specified folder.")
+    cookie_txt_file = random.choice(txt_files)
+    return cookie_txt_file
+
+BASE_YT_URL = "https://www.youtube.com/watch?v="
+extractor = URLExtract()
+LOGS = logging.getLogger(__name__)
+
+def remove_if_exists(path): #Code by T.me/zzzzl1l
+    if os.path.exists(path):
+        os.remove(path)
+
+#Code by T.me/zzzzl1l
+@l313l.ar_cmd(pattern="بحث(?: |$)(.*)")
+async def _(event): #Code by T.me/zzzzl1l
     reply = await event.get_reply_message()
-    if event.pattern_match.group(2):
-        query = event.pattern_match.group(2)
+    if event.pattern_match.group(1):
+        query = event.pattern_match.group(1)
     elif reply and reply.message:
         query = reply.message
     else:
-        return await edit_or_reply(event, "⌔∮ يرجى الرد على ما تريد البحث عنه")
-    cat = base64.b64decode("YnkybDJvRG04WEpsT1RBeQ==")
-    catevent = await edit_or_reply(event, "⌔∮ جاري البحث عن المطلوب انتظر")
-    video_link = await yt_search(str(query))
-    if not url(video_link):
-        return await catevent.edit(
-            f"⌔∮ عذرا لم استطع ايجاد مقاطع ذات صلة بـ `{query}`"
-        )
-    cmd = event.pattern_match.group(1)
-    q = "320k" if cmd == "320" else "128k"
-    song_cmd = song_dl.format(QUALITY=q, video_link=video_link)
-    name_cmd = name_dl.format(video_link=video_link)
+        return await edit_or_reply(event, "**⎉╎قم باضافـة إسـم للامـر ..**\n**⎉╎بحث + اسـم المقطـع الصـوتي**")
+    zedevent = await edit_or_reply(event, "**╮ جـارِ البحث ؏ـن المقطـٓع الصٓوتـي... 🎧♥️╰**")
+    ydl_ops = {
+        "format": "bestaudio[ext=m4a]",
+        "keepvideo": True,
+        "prefer_ffmpeg": False,
+        "geo_bypass": True,
+        "outtmpl": "%(title)s.%(ext)s",
+        "quite": True,
+        "no_warnings": True,
+        "cookiefile" : get_cookies_file(),
+    }
     try:
-        cat = Get(cat)
-        await event.client(cat)
-    except BaseException:
-        pass
+        results = YoutubeSearch(query, max_results=1).to_dict()
+        link = f"https://youtube.com{results[0]['url_suffix']}"
+        title = results[0]["title"][:40]
+        thumbnail = results[0]["thumbnails"][0]
+        thumb_name = f"{title}.jpg"
+        thumb = requests.get(thumbnail, allow_redirects=True)
+        try:
+            open(thumb_name, "wb").write(thumb.content)
+        except Exception:
+            thumb_name = None
+            pass
+        duration = results[0]["duration"]
+
+    except Exception as e:
+        await event.edit(f"**- فشـل التحميـل** \n**- الخطأ :** `{str(e)}`")
+        await l313l.send_message(event.chat_id, "**- استخدم امر التحميل البديـل**\n**- ارسـل (.تحميل + اسم المقطع الصوتي)**")
+        return
+    await event.edit("**╮ جـارِ التحميل ▬▭ . . .🎧♥️╰**")
     try:
-        stderr = (await _catutils.runcmd(song_cmd))[1]
-        # if stderr:
-        # await catevent.edit(f"**خطأ :** `{stderr}`")
-        catname, stderr = (await _catutils.runcmd(name_cmd))[:2]
-        if stderr:
-            return await catevent.edit(f"**خطأ :** `{stderr}`")
-        catname = os.path.splitext(catname)[0]
-        song_file = Path(f"{catname}.mp3")
-        catname = urllib.parse.unquote(catname)
-    except:
-        pass
-    if not os.path.exists(song_file):
-        return await catevent.edit(
-            f"⌔∮ عذرا لم استطع ايجاد مقاطع ذات صله بـ `{query}`"
-        )
-    await catevent.edit("**⌔∮ جارِ الارسال انتظر قليلاً**")
-    catthumb = Path(f"{catname}.jpg")
-    if not os.path.exists(catthumb):
-        catthumb = Path(f"{catname}.webp")
-    elif not os.path.exists(catthumb):
-        catthumb = None
-    title = catname.replace("./temp/", "").replace("_", "|")
-    try:
+        with yt_dlp.YoutubeDL(ydl_ops) as ydl:
+            info_dict = ydl.extract_info(link, download=False)
+            audio_file = ydl.prepare_filename(info_dict)
+            ydl.process_info(info_dict)
+        host = str(info_dict["uploader"])
+        secmul, dur, dur_arr = 1, 0, duration.split(":")
+        for i in range(len(dur_arr) - 1, -1, -1):
+            dur += int(float(dur_arr[i])) * secmul
+            secmul *= 60
+        await zedevent.edit("**╮ جـارِ الرفـع ▬▬ . . .🎧♥️╰**")
         await event.client.send_file(
             event.chat_id,
-            song_file,
+            audio_file,
             force_document=False,
-            caption=f"**العنوان:** `{title}`",
-            thumb=catthumb,
-            supports_streaming=True,
-            reply_to=reply_to_id,
+            caption=f"**⎉╎البحث :** `{title}`",
+            thumb=thumb_name,
         )
-        await catevent.delete()
-        for files in (catthumb, song_file):
-            if files and os.path.exists(files):
-                os.remove(files)
-    except ChatSendMediaForbiddenError as err:
-        await catevent.edit("لا يمكن ارسال المقطع الصوتي هنا")
+        await zedevent.delete()
+    except ChatSendMediaForbiddenError as err: # Code By T.me/zzzzl1l
+        await event.edit("**- عـذراً .. الوسـائـط مغلقـه هنـا ؟!**")
         LOGS.error(str(err))
+    except Exception as e:
+        await event.edit(f"**- فشـل التحميـل** \n**- الخطأ :** `{str(e)}`")
+        await l313l.send_message(event.chat_id, "**- استخدم امر التحميل البديـل**\n**- ارسـل (.تحميل + اسم المقطع الصوتي)**")
+    try:
+        remove_if_exists(audio_file)
+        remove_if_exists(thumb_name)
+    except Exception as e:
+        print(e)
 
 
 @l313l.ar_cmd(
