@@ -75,24 +75,34 @@ async def aljoker313(joker313):
   await joker313.client.send_file(joker313.chat_id,url,caption="᯽︙ Dev : @Lx5x5 .",parse_mode="html")
   await joker313.delete()
 
-@l313l.on(events.NewMessage(pattern=".شعر$"))
+# تعريف الحدث للرد على أي شخص يكتب .شعر
+@l313l.on(events.NewMessage(pattern="^.شعر$"))
 async def send_poem(event):
     # التأكد من أن الرسالة ليست من البوت نفسه
     if event.sender_id == (await event.client.get_me()).id:
         return
     
-    # رقم عشوائي بين 2 و 101
-    rl = random.randint(2, 101)
+    try:
+        # رقم عشوائي بين 2 و 101
+        rl = random.randint(2, 101)
+        
+        # رابط الملف العشوائي من القناة
+        url = f"https://t.me/L1BBBL/{rl}"
+        
+        # إرسال الملف مع تعليق
+        await event.client.send_file(
+            event.chat_id,
+            url,
+            caption="᯽︙ تم اختيار هذا الشعر لك من القناة: @L1BBBL\n᯽︙ Dev: @Lx5x5",
+            parse_mode="html"
+        )
+        
+        # حذف الأمر الأصلي (اختياري)
+        await event.delete()
     
-    # رابط الملف العشوائي من القناة
-    url = f"https://t.me/L1BBBL/{rl}"
-    
-    # إرسال الملف مع تعليق
-    await event.client.send_file(
-        event.chat_id,
-        url,
-        caption="- تم اختيارها لك .",
-        parse_mode="html"
+    except Exception as e:
+        # في حالة حدوث خطأ، إرسال رسالة تفيد بذلك
+        await event.reply(f"حدث خطأ أثناء إرسال الشعر: {str(e)}")
    
 @l313l.on(admin_cmd(outgoing=True, pattern="قران$"))
 async def jepvois(vois):
