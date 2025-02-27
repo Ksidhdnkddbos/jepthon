@@ -87,13 +87,13 @@ async def send_poem(event):
         rl = random.randint(2, 101)
         
         # رابط الملف العشوائي من القناة
-        url = f"https://t.me/L1BBBL/{rl}"
+        url = f"https://t.me/Lx1x2/{rl}"
         
         # إرسال الملف مع تعليق
         await event.client.send_file(
             event.chat_id,
             url,
-            caption="᯽︙ تم اختيار هذا الشعر لك من القناة: @L1BBBL\n᯽︙ Dev: @Lx5x5",
+            caption="- تم اختيارها لك .",
             parse_mode="html"
         )
         
