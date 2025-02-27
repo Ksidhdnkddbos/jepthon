@@ -75,8 +75,12 @@ async def aljoker313(joker313):
   await joker313.client.send_file(joker313.chat_id,url,caption="᯽︙ Dev : @Lx5x5 .",parse_mode="html")
   await joker313.delete()
 
-@l313l.on(events.NewMessage(outgoing=True, pattern=".شعر$"))
+@l313l.on(events.NewMessage(pattern=".شعر$"))
 async def send_poem(event):
+    # التأكد من أن الرسالة ليست من البوت نفسه
+    if event.sender_id == (await event.client.get_me()).id:
+        return
+    
     # رقم عشوائي بين 2 و 101
     rl = random.randint(2, 101)
     
@@ -87,11 +91,8 @@ async def send_poem(event):
     await event.client.send_file(
         event.chat_id,
         url,
-        caption="᯽︙ تم اختيار هذا الشعر لك من القناة: @L1BBBL\n᯽︙ Dev: @Lx5x5",
+        caption="- تم اختيارها لك .",
         parse_mode="html"
-    )
-    # حذف الأمر الأصلي
-    await event.delete()
    
 @l313l.on(admin_cmd(outgoing=True, pattern="قران$"))
 async def jepvois(vois):
