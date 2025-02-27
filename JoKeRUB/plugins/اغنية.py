@@ -86,8 +86,8 @@ async def _(event):
             'cookiefile': cookie_file,  # استخدام ملف الكوكيز
             'extract_flat': True,
         }
-        with YoutubeDL(ydl_opts) as ydl:
-            search_results = ydl.extract_info(f"ytsearch:{query}", download=False)
+        with YoutubeSearch(ydl_opts) as ydl:
+            search_results = ydl.extract_info(f"YoutubeSearch:{query}", download=False)
             video_link = search_results['entries'][0]['url']  # الحصول على رابط الفيديو الأول
     except Exception as e:
         return await catevent.edit(f"❌ فشل البحث: {str(e)}")
@@ -101,6 +101,7 @@ async def _(event):
         ydl_opts = {
             'cookiefile': cookie_file,  # استخدام ملف الكوكيز
             'format': 'bestaudio/best',
+            'keepvideo':False
             'postprocessors': [{
                 'key': 'FFmpegExtractAudio',
                 'preferredcodec': 'mp3',
