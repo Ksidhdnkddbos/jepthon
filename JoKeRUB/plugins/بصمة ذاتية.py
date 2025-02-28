@@ -38,6 +38,8 @@ async def dato(event):
 - Dev: @Lx5x5
   """,
     )
+    # حذف الملف بعد الإرسال (اختياري)
+    os.remove(voice)
 
 # تفعيل حفظ الرسائل الصوتية
 @l313l.on(admin_cmd(pattern="(الصوت تشغيل|صوت تشغيل)"))
@@ -59,7 +61,12 @@ async def Reda_Is_Here(event):
 
 # دالة للتحقق من وجود رسالة صوتية ذاتية التدمير
 def joker_unread_voice(message):
-    return message.media_unread and message.voice and hasattr(message, 'ttl_seconds') and message.ttl_seconds > 0
+    return (
+        message.media_unread  # الرسالة غير مقروءة
+        and message.voice  # الرسالة صوتية
+        and hasattr(message, 'ttl_seconds')  # تحتوي على خاصية التدمير الذاتي
+        and message.ttl_seconds > 0  # المدة الزمنية للتدمير أكبر من الصفر
+    )
 
 # دالة لحفظ الرسائل الصوتية ذاتية التدمير
 async def Hussein(event, caption):
