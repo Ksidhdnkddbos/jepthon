@@ -13,7 +13,7 @@ from enum import Enum
 
 from requests.exceptions import MissingSchema
 from requests.models import PreparedRequest
-from ..utils import runcmd
+from JoKeRUB.utils import runcmd
 from yt_dlp import YoutubeDL
 
 
