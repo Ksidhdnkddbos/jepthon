@@ -8,8 +8,6 @@ from . import zedub
 from ..core.managers import edit_delete, edit_or_reply
 from ..helpers.utils import mentionuser
 
-plugin_category = "البوت"
-
 
 async def get_group_call(chat):
     if isinstance(chat, Channel):
