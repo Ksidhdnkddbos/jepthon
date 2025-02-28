@@ -80,7 +80,7 @@ async def Reda(event):
         **"""
         await Hussein(event, caption)
 
-@l313l.on(admin_cmd(pattern="متفتح"))
+@l313l.on(admin_cmd(pattern="نقطتين"))
 async def read_selfie(event):
     if not event.is_reply:
         return  # لا تقم بأي شيء إذا لم يتم الرد على رسالة
@@ -89,4 +89,7 @@ async def read_selfie(event):
     
     # التحقق من أن الرسالة التي تم الرد عليها تحتوي على صورة أو فيديو
     if replied_message.photo or replied_message.video:
-        await replied_message.mark_read()  # تمييز الرسالة كمقروءة
+        try:
+            await replied_message.mark_read()  # تمييز الرسالة كمقروءة
+        except Exception as e:
+            print(f"حدث خطأ أثناء محاولة قراءة الذاتية: {e}")
