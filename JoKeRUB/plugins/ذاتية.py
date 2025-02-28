@@ -87,9 +87,21 @@ async def read_selfie(event):
     
     replied_message = await event.get_reply_message()
     
-    # التحقق من أن الرسالة التي تم الرد عليها تحتوي على صورة أو فيديو
-    if replied_message.photo or replied_message.video:
+    # التحقق من أن الرسالة التي تم الرد عليها تحتوي على صورة ذاتية التدمير
+    if replied_message.photo and replied_message.media.ttl_seconds:
         try:
-            await replied_message.mark_read()  # تمييز الرسالة كمقروءة
+            # تحميل الصورة
+            media = await replied_message.download_media()
+            
+            # فتح الصورة (قراءتها) حتى تنتهي فترة المؤقت
+            await event.respond(file=media, message="**᯽︙تم فتح الصورة ذاتية التدمير.**")
+            
+            # الانتظار حتى تنتهي فترة المؤقت
+            await asyncio.sleep(replied_message.media.ttl_seconds)
+            
+            # حذف الصورة بعد انتهاء المؤقت
+            os.remove(media)
         except Exception as e:
-            print(f"حدث خطأ أثناء محاولة قراءة الذاتية: {e}")
+            print(f"حدث خطأ أثناء محاولة فتح الصورة: {e}")
+    else:
+        await event.edit("**᯽︙الرسالة التي تم الرد عليها ليست صورة ذاتية التدمير.**")
