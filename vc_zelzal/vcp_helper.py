@@ -198,7 +198,7 @@ class jepthonvc:
             if self.PLAYING:
                 await self.app.change_stream(
                     self.CHAT_ID,
-                    AudioPiped("zedthon/ahmed/Silence01s.mp3"),
+                    AudioPiped("ALJoker/karar/Silence01s.mp3"),
                 )
             self.PLAYING = False
             return "⚈ **التخطـي ➰**\n⚈ **عـذراً عـزيـزي ✗**\n⚈ **قائمـة الشغيـل فارغـه ؟!**"
