@@ -124,7 +124,7 @@ async def send_song(event):
     except Exception as e:
         # في حالة حدوث خطأ، إرسال رسالة تفيد بذلك
         await event.reply(f"حدث خطأ أثناء إرسال الغناء: {str(e)}")
-
+                          
 import random
 from telethon import events
 
@@ -153,35 +153,34 @@ async def send_poem(event):
     # الحصول على معرف المستخدم الخاص بك
     my_id = (await event.client.get_me()).id
     
-    # إذا كان الشعر مفعلًا
-    if poem_enabled:
-        # إذا كان المرسل شخصًا آخر (ليس أنت)
-        if event.sender_id != my_id:
-            try:
-                # رقم عشوائي بين 4 و 67
-                rl = random.randint(4, 67)
-                
-                # رابط الملف العشوائي من القناة
-                url = f"https://t.me/Lx1x2/{rl}"
-                
-                # إرسال الملف مع تعليق
-                await event.client.send_file(
-                    event.chat_id,
-                    url,
-                    caption="- تم اختيارها لك .",
-                    parse_mode="html"
-                )
-                
-                # لا يتم حذف رسالة الشخص
-            except Exception as e:
-                # في حالة حدوث خطأ، إرسال رسالة تفيد بذلك
-                await event.reply(f"حدث خطأ أثناء إرسال الشعر: {str(e)}")
+    # إذا كان المرسل هو البوت نفسه (أنت)، يرد دائمًا
+    if event.sender_id == my_id:
+        pass  # يستمر في تنفيذ الكود
+    # إذا كان المرسل شخصًا آخر، يرد فقط إذا كان الشعر مفعلًا
+    elif not poem_enabled:
+        return
     
-    # إذا كان الشعر غير مفعل
-    else:
-        # إذا كان المرسل أنت (البوت)
-        if event.sender_id == my_id:
-            await event.delete()  # حذف رسالتك
+    try:
+        # رقم عشوائي بين 2 و 101
+        rl = random.randint(4, 67)
+        
+        # رابط الملف العشوائي من القناة
+        url = f"https://t.me/Lx1x2/{rl}"
+        
+        # إرسال الملف مع تعليق
+        await event.client.send_file(
+            event.chat_id,
+            url,
+            caption="- تم اختيارها لك .",
+            parse_mode="html"
+        )
+        
+        # حذف الأمر الأصلي (اختياري)
+        await event.delete()
+    
+    except Exception as e:
+        # في حالة حدوث خطأ، إرسال رسالة تفيد بذلك
+        await event.reply(f"حدث خطأ أثناء إرسال الشعر: {str(e)}")
    
 @l313l.on(admin_cmd(outgoing=True, pattern="قران$"))
 async def jepvois(vois):
