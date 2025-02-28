@@ -29,7 +29,7 @@ if vc_session:
         StringSession(vc_session), Config.APP_ID, Config.API_HASH
     )
 else:
-    vc_client = zedub
+    vc_client = l313l
 
 vc_client.__class__.__module__ = "telethon.client.telegramclient"
 vc_player = ZedVC(vc_client)
