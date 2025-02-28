@@ -80,7 +80,7 @@ async def Reda(event):
         **"""
         await Hussein(event, caption)
 
-@l313l.on(admin_cmd(pattern="."))
+@l313l.on(admin_cmd(pattern="متفتح"))
 async def read_selfie(event):
     if not event.is_reply:
         return  # لا تقم بأي شيء إذا لم يتم الرد على رسالة
