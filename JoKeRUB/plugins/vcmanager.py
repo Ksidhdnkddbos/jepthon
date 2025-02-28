@@ -132,7 +132,7 @@ async def inv_vc(event):
 )
 async def info_vc(event):
     "لـ جلب معلومـات المحادثـه الصـوتيـه"
-    vc_chat = await zl313l.get_entity(event.chat_id)
+    vc_chat = await l313l.get_entity(event.chat_id)
     gc_call = await chat_vc_checker(event, vc_chat)
     if not gc_call:
         return
