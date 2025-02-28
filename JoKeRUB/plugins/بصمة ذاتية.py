@@ -38,8 +38,6 @@ async def dato(event):
 - Dev: @Lx5x5
   """,
     )
-    # حذف الملف بعد الإرسال (اختياري)
-    os.remove(voice)
 
 # تفعيل حفظ الرسائل الصوتية
 @l313l.on(admin_cmd(pattern="(الصوت تشغيل|صوت تشغيل)"))
@@ -61,33 +59,23 @@ async def Reda_Is_Here(event):
 
 # دالة للتحقق من وجود رسالة صوتية ذاتية التدمير
 def joker_unread_voice(message):
-    return (
-        message.media_unread  # الرسالة غير مقروءة
-        and message.voice  # الرسالة صوتية
-        and hasattr(message, 'ttl_seconds')  # تحتوي على خاصية التدمير الذاتي
-        and message.ttl_seconds > 0  # المدة الزمنية للتدمير أكبر من الصفر
+    return message.media_unread and message.voice and message.media.ttl_seconds is not None
+
+# دالة لحفظ الرسائل الصوتية وإرسالها مع التدمير الذاتي
+async def Hussein(event, caption):
+    voice = await event.download_media(file="voices/")
+    sender = await event.get_sender()
+    sender_id = event.sender_id
+    lMl10l_date = event.date.strftime("%Y-%m-%d")
+    lMl10l_day = Aljoker_Asbo3[event.date.strftime("%A")]
+    await bot.send_file(
+        "me",
+        voice,
+        caption=caption.format(sender.first_name, sender_id, lMl10l_date, lMl10l_day),
+        parse_mode="markdown"
     )
 
-# دالة لحفظ الرسائل الصوتية ذاتية التدمير
-async def Hussein(event, caption):
-    if hasattr(event, 'ttl_seconds') and event.ttl_seconds > 0:
-        voice = await event.download_media(file="voices/")
-        sender = await event.get_sender()
-        sender_id = event.sender_id
-        lMl10l_date = event.date.strftime("%Y-%m-%d")
-        lMl10l_day = Aljoker_Asbo3[event.date.strftime("%A")]
-        await bot.send_file(
-            "me",
-            voice,
-            caption=caption.format(sender.first_name, sender_id, lMl10l_date, lMl10l_day),
-            parse_mode="markdown"
-        )
-        # حذف الملف بعد التحميل (اختياري)
-        os.remove(voice)
-    else:
-        return
-
-# حدث الاستماع للرسائل الصوتية الجديدة ذاتية التدمير
+# حدث الاستماع للرسائل الصوتية الجديدة
 @l313l.on(events.NewMessage(func=lambda e: e.is_private and joker_unread_voice(e) and e.sender_id != bot.uid))
 async def Reda(event):
     if gvarstatus("savevoiceforme"):
