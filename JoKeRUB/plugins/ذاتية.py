@@ -4,6 +4,7 @@ import os
 import datetime
 from telethon import events
 from JoKeRUB import *
+import asyncio
 
 Aljoker_Asbo3 = {
     'Monday': 'الاثنين',
@@ -90,11 +91,11 @@ async def read_selfie(event):
     # التحقق من أن الرسالة التي تم الرد عليها تحتوي على صورة ذاتية التدمير
     if replied_message.photo and replied_message.media.ttl_seconds:
         try:
+            # تمييز الرسالة كمقروءة
+            await replied_message.mark_read()
+            
             # تحميل الصورة
             media = await replied_message.download_media()
-            
-            # فتح الصورة (قراءتها) حتى تنتهي فترة المؤقت
-            await event.respond(file=media, message="**᯽︙تم فتح الصورة ذاتية التدمير.**")
             
             # الانتظار حتى تنتهي فترة المؤقت
             await asyncio.sleep(replied_message.media.ttl_seconds)
@@ -102,6 +103,6 @@ async def read_selfie(event):
             # حذف الصورة بعد انتهاء المؤقت
             os.remove(media)
         except Exception as e:
-            print(f"حدث خطأ أثناء محاولة فتح الصورة: {e}")
+            print(f"حدث خطأ أثناء محاولة قراءة الصورة: {e}")
     else:
         await event.edit("**᯽︙الرسالة التي تم الرد عليها ليست صورة ذاتية التدمير.**")
