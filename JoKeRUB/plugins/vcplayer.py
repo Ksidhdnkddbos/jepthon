@@ -14,7 +14,7 @@ from ..core.managers import edit_delete, edit_or_reply
 
 from ..vc_zelzal.stream_helper import Stream
 from ..vc_zelzal.tg_downloader import tg_dl
-from ..vc_zelzal.vcp_helper import ZedVC
+from ..vc_zelzal.vcp_helper import jepthonvc
 
 plugin_category = "extra"
 
@@ -32,7 +32,7 @@ else:
     vc_client = l313l
 
 vc_client.__class__.__module__ = "telethon.client.telegramclient"
-vc_player = ZedVC(vc_client)
+vc_player = jepthonvc(vc_client)
 
 asyncio.create_task(vc_player.start())
 
