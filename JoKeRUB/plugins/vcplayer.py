@@ -8,7 +8,7 @@ from youtube_search import YoutubeSearch
 from telethon import TelegramClient
 from telethon.sessions import StringSession
 from telethon.tl.types import User
-from . import zedub
+from . import l313l
 from ..Config import Config
 from ..core.managers import edit_delete, edit_or_reply
 
