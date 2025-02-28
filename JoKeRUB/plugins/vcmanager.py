@@ -211,7 +211,7 @@ async def mute_vc(event):
             user_list.append(cc)
 
     for user in user_list:
-        await zedub(
+        await l313l(
             functions.phone.EditGroupCallParticipantRequest(
                 call=gc_call,
                 participant=user,
