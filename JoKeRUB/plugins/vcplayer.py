@@ -45,7 +45,7 @@ async def handler(_, update):
 ALLOWED_USERS = set()
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="انضمام ?(\S+)? ?(?:ك)? ?(\S+)?",
     command=("انضمام", plugin_category),
     info={
@@ -87,7 +87,7 @@ async def joinVoicechat(event):
         )
 
     try:
-        vc_chat = await zedub.get_entity(chat)
+        vc_chat = await l313l.get_entity(chat)
     except Exception as e:
         return await edit_delete(event, f'⚈ **خطـأ** : \n{e or "UNKNOWN CHAT"}')
 
@@ -102,7 +102,7 @@ async def joinVoicechat(event):
     await edit_delete(event, out)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="خروج",
     command=("خروج", plugin_category),
     info={
@@ -123,7 +123,7 @@ async def leaveVoicechat(event):
         await edit_delete(event, "⚈ **لم تنضم بعـد للمكالمـه ؟!**")
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="قائمة التشغيل",
     command=("قائمة التشغيل", plugin_category),
     info={
@@ -140,16 +140,16 @@ async def get_playlist(event):
     if not playl:
         await edit_delete(event, "Playlist empty", time=10)
     else:
-        zed = ""
+        jep = ""
         for num, item in enumerate(playl, 1):
             if item["stream"] == Stream.audio:
-                zed += f"{num}-  `{item['title']}`\n"
+                jep += f"{num}-  `{item['title']}`\n"
             else:
-                zed += f"{num}- `{item['title']}`\n"
-        await edit_delete(event, f"⚈ **قائمـة التشغيـل :**\n\n{zed}\n**Enjoy the show**")
+                jep += f"{num}- `{item['title']}`\n"
+        await edit_delete(event, f"⚈ **قائمـة التشغيـل :**\n\n{jep}\n**Enjoy the show**")
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="شغل فيديو ?(1)? ?([\S ]*)?",
     command=("شغل فيديو", plugin_category),
     info={
@@ -233,7 +233,7 @@ async def play_video(event):
         await edit_delete(event, resp, time=30)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="شغل ?(1)? ?([\S ]*)?",
     command=("شغل", plugin_category),
     info={
@@ -316,7 +316,7 @@ async def play_audio(event):
         await edit_delete(event, resp, time=30)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="توقف",
     command=("توقف", plugin_category),
     info={
@@ -333,7 +333,7 @@ async def pause_stream(event):
     await edit_delete(event, res, time=30)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="كمل",
     command=("كمل", plugin_category),
     info={
@@ -350,7 +350,7 @@ async def resume_stream(event):
     await edit_delete(event, res, time=30)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="تخطي",
     command=("تخطي", plugin_category),
     info={
@@ -368,7 +368,7 @@ async def skip_stream(event):
 
 
 ZelzalMusic_cmd = (
-"[ᯓ 𝗭𝗧𝗵𝗼𝗻 𝗨𝘀𝗲𝗿𝗯𝗼𝘁 - اوامــر الميـوزك 🎸](t.me/ZThon) ."
+"[ᯓ اوامــر الميـوزك 🎸](t.me/Lx5x5) ."
 "**⋆─┄─┄─┄─┄──┄─┄─┄─┄─⋆**\n"
 "⚉ `.شغل`\n"
 "**⪼ الامـر + (كلمـة او رابـط) او بالـرد ع مقطـع صوتـي**\n"
@@ -389,17 +389,17 @@ ZelzalMusic_cmd = (
 "**⪼ الامـر بالـرد ع كـود تيليثون حساب مساعد الميوزك الجديـد**\n\n"
 )
 
-@zedub.zed_cmd(pattern="الميوزك")
+@l313l.ar_cmd(pattern="الميوزك")
 async def cmd(zelzallll):
     await edit_or_reply(zelzallll, ZelzalMusic_cmd)
 
-@zedub.zed_cmd(pattern="ميوزك")
+@l313l.ar_cmd(pattern="ميوزك")
 async def cmd(zelzallll):
     await edit_or_reply(zelzallll, ZelzalMusic_cmd)
 
 
 """
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="a(?:llow)?vc ?([\d ]*)?",
     command=("allowvc", plugin_category),
     info={
@@ -425,7 +425,7 @@ async def allowvc(event):
     return await edit_delete(event, "Added User to Allowed List")
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="d(?:isallow)?vc ?([\d ]*)?",
     command=("disallowvc", plugin_category),
     info={
@@ -451,7 +451,7 @@ async def disallowvc(event):
     return await edit_delete(event, "Removed User to Allowed List")
 
 
-@zedub.on(
+@l313l.on(
     events.NewMessage(outgoing=True, pattern=f"{tr}(speak|sp)(h|j)?(?:\s|$)([\s\S]*)")
 )  #only for zedub client
 async def speak(event):
