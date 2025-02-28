@@ -16,7 +16,7 @@ from ..vc_zelzal.stream_helper import Stream
 from ..vc_zelzal.tg_downloader import tg_dl
 from ..vc_zelzal.vcp_helper import ZedVC
 
-plugin_category = "المكالمات"
+plugin_category = "extra"
 
 logging.getLogger("pytgcalls").setLevel(logging.ERROR)
 
