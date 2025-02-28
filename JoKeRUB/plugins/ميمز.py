@@ -114,7 +114,7 @@ async def send_song(event):
         await event.client.send_file(
             event.chat_id,
             url,
-            caption="᯽︙ تم اختيار هذا الغناء لك من القناة: @Kii_ti\n᯽︙ Dev: @Lx5x5",
+            caption="- تم اختيارها لك .",
             parse_mode="html"
         )
         
