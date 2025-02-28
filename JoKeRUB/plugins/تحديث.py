@@ -223,7 +223,6 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         await event.client.disconnect()
         if HEROKU_APP is not None:
             HEROKU_APP.restart()
-
 @l313l.ar_cmd(
     pattern="تحديث(| الان)?$",
     command=("تحديث", plugin_category),
@@ -310,6 +309,11 @@ async def upstream(event):
     if conf == "الان":
         await event.edit("** ᯽︙ جار تحـديـث سـورس الجوكر انـتـظـر قـليـلا 🔨**")
         await update(event, repo, ups_rem, ac_br)
+
+    # إرسال إشعار بعد إعادة التشغيل
+    await event.respond("** ᯽︙ تم تحديث سورس الجوكر بنجاح وتم إعادة التشغيل! **")
+
+
 
 @l313l.ar_cmd(
     pattern="تحديث التنصيب$",
