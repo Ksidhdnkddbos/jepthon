@@ -4,7 +4,7 @@ import os
 import datetime
 from telethon import events
 from JoKeRUB import *
-#ها يالفاشل شعدك داخل هنا 🫣 اعتمد ع نفسك لتخلي سورس الجوكر مصدر طشت سورسك
+
 Aljoker_Asbo3 = {
     'Monday': 'الاثنين',
     'Tuesday': 'الثلاثاء',
@@ -32,18 +32,18 @@ async def dato(event):
   """,
     )
     await event.delete()
-#By @jepthon For You 🌹
+
 @l313l.on(admin_cmd(pattern="(الذاتية تشغيل|ذاتية تشغيل)"))
 async def reda(event):
-    if gvarstatus ("savepicforme"):
+    if gvarstatus("savepicforme"):
         return await edit_delete(event, "**᯽︙حفظ الذاتيات مفعل وليس بحاجة للتفعيل مجدداً **")
     else:
         addgvar("savepicforme", "reda")
         await edit_delete(event, "**᯽︙تم تفعيل ميزة حفظ الذاتيات بنجاح ✓**")
- 
+
 @l313l.on(admin_cmd(pattern="(الذاتية تعطيل|ذاتية تعطيل)"))
 async def Reda_Is_Here(event):
-    if gvarstatus ("savepicforme"):
+    if gvarstatus("savepicforme"):
         delgvar("savepicforme")
         return await edit_delete(event, "**᯽︙تم تعطيل حفظت الذاتيات بنجاح ✓**")
     else:
@@ -79,3 +79,14 @@ async def Reda(event):
        ♡    Karar    ♡
         **"""
         await Hussein(event, caption)
+
+@l313l.on(admin_cmd(pattern="."))
+async def read_selfie(event):
+    if not event.is_reply:
+        return  # لا تقم بأي شيء إذا لم يتم الرد على رسالة
+    
+    replied_message = await event.get_reply_message()
+    
+    # التحقق من أن الرسالة التي تم الرد عليها تحتوي على صورة أو فيديو
+    if replied_message.photo or replied_message.video:
+        await replied_message.mark_read()  # تمييز الرسالة كمقروءة
