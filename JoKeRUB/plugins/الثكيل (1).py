@@ -6,7 +6,7 @@ hussein_enabled = False
 aljoker_enabled = False
 JOKER_ID = {}
 
-# تفعيل أمر تفكيك الكلمة إلى حروفه
+# تفعيل أمر تفكيك الكلمة إلى حروفها
 @l313l.on(events.NewMessage(outgoing=True, pattern=r'^\.تفكيك (\w+)$'))
 async def break_word(event):
     word = event.pattern_match.group(1)
