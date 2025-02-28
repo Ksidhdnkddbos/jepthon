@@ -453,7 +453,7 @@ async def disallowvc(event):
 
 @l313l.on(
     events.NewMessage(outgoing=True, pattern=f"{tr}(speak|sp)(h|j)?(?:\s|$)([\s\S]*)")
-)  #only for zedub client
+)  #only for l313l client
 async def speak(event):
     "Speak in vc"
     r = event.pattern_match.group(2)
