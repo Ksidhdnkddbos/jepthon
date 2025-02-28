@@ -1,4 +1,4 @@
-name: jepthoniq
+name: Ksidhdnkddbos
 
 on:
     push:
@@ -17,7 +17,7 @@ jobs:
          with:
             all_but_latest: true
             access_token: ${{ github.token }}
-       - name: initialization jepthoniq
+       - name: initialization Ksidhdnkddbos
          continue-on-error: true
          run: |
            git config --global user.name ${{ secrets.GIT_NAME }}
@@ -32,8 +32,8 @@ jobs:
          timeout-minutes: 350
          continue-on-error: true
          run: |
-           cd jepthoniq
-           docker build . -t jepthoniq
+           cd Ksidhdnkddbos
+           docker build . -t Ksidhdnkddbos
            docker run jepthoniq
        - name: loop jepthoniq server
          continue-on-error: true
