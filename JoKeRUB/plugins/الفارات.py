@@ -648,6 +648,24 @@ async def variable(event):
         else:
             await jep.edit("**⌔∮ تم بنجاح تغيير زخرفة الصورة الوقتية\n\n❃ جار اعادة تشغيل السورس انتظر من 2-5 دقائق ليتشغل مره اخرى**".format(input_str))
         heroku_var[variable] = zinfo
+  elif input_str == "جلسة المساعد" or input_str == "الحساب المساعد" or input_str == "مساعد الميوزك" or input_str == "كود الميوزك" or input_str == "جلسة الميوزك":
+        if Config.HEROKU_API_KEY is None:
+            return await ed(event, "✧ اضبط Var المطلوب في Heroku على وظيفة هذا بشكل طبيعي `HEROKU_API_KEY` اذا كنت لاتعلم اين يوجد فقط اذهب الى حسابك في هيروكو ثم الى الاعدادات ستجده بالاسفل انسخه ودخله في الفار. ")
+
+        if Config.HEROKU_APP_NAME is not None:
+            app = Heroku.app(Config.HEROKU_APP_NAME)
+        else:
+            return await ed(event, "✧ اضبط Var المطلوب في Heroku على وظيفة هذا بشكل طبيعي `HEROKU_APP_NAME` اسم التطبيق اذا كنت لاتعلم.")
+        heroku_var = app.config()
+        variable = "VC_SESSION"
+        await asyncio.sleep(1.5)
+        if "=" not in vinfo:
+            return await jep.edit("**✧ خطـأ .. قم بالـرد ع كود تيليثون - Telethon فقـط ؟!**")
+        if variable in heroku_var:
+            await jep.edit("**✧ تم تغييـر {} بنجـاح ☑️**\n**✧ المتغيـر : ↶**\n `{}` \n**✧ يتم الان اعـادة تشغيـل بـوت زد ثـون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**".format(input_str, vinfo))
+        else:
+            await jep.edit("**✧ تم اضافـة {} بنجـاح ☑️** \n**✧ المضاف اليه :**\n `{}` \n**✧ يتم الان اعـادة تشغيـل بـوت زد ثـون يستغـرق الامر 2-1 دقيقـه ▬▭ ...**".format(input_str, vinfo))
+        heroku_var[variable] = vinfo
     elif input_str == "17":
         variable = "DEFAULT_PIC"
         zinfo = "JoKeRUB/helpers/styles/EASPORTS15.ttf"
