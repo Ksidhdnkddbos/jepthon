@@ -20,7 +20,7 @@ plugin_category = "extra"
 
 logging.getLogger("pytgcalls").setLevel(logging.ERROR)
 
-OWNER_ID = zedub.uid
+OWNER_ID = l313l.uid
 
 vc_session = Config.VC_SESSION
 
