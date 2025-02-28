@@ -35,7 +35,7 @@ async def parse_entity(entity):
     return await zedub.get_entity(entity)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="بدء مكالمه$",
     command=("بدء مكالمه", plugin_category),
     info={
