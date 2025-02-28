@@ -68,12 +68,62 @@ async def _(event):
         return await event.edit("***حدث خطا ما حاول مجددا**")
         
 #السلام على الحسين وعلى الارواح التي حلت بفنائك ولعن الله قاتليك
-@l313l.on(admin_cmd(outgoing=True, pattern="غنيلي$"))
-async def aljoker313(joker313):
-  rl = random.randint(1,385)
-  url = f"https://t.me/DwDi1/{rl}"
-  await joker313.client.send_file(joker313.chat_id,url,caption="᯽︙ Dev : @Lx5x5 .",parse_mode="html")
-  await joker313.delete()
+import random
+from telethon import events
+
+# متغير لتخزين حالة التفعيل
+song_enabled = False
+
+# أمر تفعيل غنيلي
+@l313l.on(events.NewMessage(pattern="^\.تفعيل غنيلي$"))
+async def enable_song(event):
+    global song_enabled
+    song_enabled = True
+    await event.reply("تم تفعيل غنيلي بنجاح! الآن البوت سيرد على أي شخص يكتب `.غنيلي`.")
+
+# أمر إلغاء تفعيل غنيلي
+@l313l.on(events.NewMessage(pattern="^\.إلغاء تفعيل غنيلي$"))
+async def disable_song(event):
+    global song_enabled
+    song_enabled = False
+    await event.reply("تم إلغاء تفعيل غنيلي بنجاح! الآن البوت لن يرد على الآخرين عند كتابة `.غنيلي`.")
+
+# تعريف الحدث للرد على أي شخص يكتب .غنيلي
+@l313l.on(events.NewMessage(pattern="^\.غنيلي$"))
+async def send_song(event):
+    global song_enabled
+    
+    # الحصول على معرف المستخدم الخاص بك
+    my_id = (await event.client.get_me()).id
+    
+    # إذا كان المرسل هو البوت نفسه (أنت)، يرد دائمًا
+    if event.sender_id == my_id:
+        pass  # يستمر في تنفيذ الكود
+    # إذا كان المرسل شخصًا آخر، يرد فقط إذا كان غنيلي مفعلًا
+    elif not song_enabled:
+        return
+    
+    try:
+        # رقم عشوائي بين 1 و 385
+        rl = random.randint(5, 141)
+        
+        # رابط الملف العشوائي من القناة
+        url = f"https://t.me/Kii_ti/{rl}"
+        
+        # إرسال الملف مع تعليق
+        await event.client.send_file(
+            event.chat_id,
+            url,
+            caption="᯽︙ تم اختيار هذا الغناء لك من القناة: @Kii_ti\n᯽︙ Dev: @Lx5x5",
+            parse_mode="html"
+        )
+        
+        # حذف الأمر الأصلي (اختياري)
+        await event.delete()
+    
+    except Exception as e:
+        # في حالة حدوث خطأ، إرسال رسالة تفيد بذلك
+        await event.reply(f"حدث خطأ أثناء إرسال الغناء: {str(e)}")
 
 import random
 from telethon import events
