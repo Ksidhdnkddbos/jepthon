@@ -4,16 +4,16 @@
 from telethon import functions
 from telethon.errors import ChatAdminRequiredError, UserAlreadyInvitedError
 from telethon.tl.types import Channel, Chat, User
-from . import zedub
+from . import l313l
 from ..core.managers import edit_delete, edit_or_reply
 from ..helpers.utils import mentionuser
 
 
 async def get_group_call(chat):
     if isinstance(chat, Channel):
-        result = await zedub(functions.channels.GetFullChannelRequest(channel=chat))
+        result = await l313l(functions.channels.GetFullChannelRequest(channel=chat))
     elif isinstance(chat, Chat):
-        result = await zedub(functions.messages.GetFullChatRequest(chat_id=chat.id))
+        result = await l313l(functions.messages.GetFullChatRequest(chat_id=chat.id))
     return result.full_chat.call
 
 
@@ -32,7 +32,7 @@ async def chat_vc_checker(event, chat, edits=True):
 async def parse_entity(entity):
     if entity.isnumeric():
         entity = int(entity)
-    return await zedub.get_entity(entity)
+    return await l313l.get_entity(entity)
 
 
 @l313l.ar_cmd(
@@ -45,12 +45,12 @@ async def parse_entity(entity):
 )
 async def start_vc(event):
     "لـ بـدء المحادثـه الصـوتيـه"
-    vc_chat = await zedub.get_entity(event.chat_id)
+    vc_chat = await l313l.get_entity(event.chat_id)
     gc_call = await chat_vc_checker(event, vc_chat, False)
     if gc_call:
         return await edit_delete(event, "**- المحادثـه الصوتيـه تم بـدئهـا مسبقـاً هنـا **")
     try:
-        await zedub(
+        await l313l(
             functions.phone.CreateGroupCallRequest(
                 peer=vc_chat,
                 title="Zed VC",
@@ -61,7 +61,7 @@ async def start_vc(event):
         await edit_delete(event, "**- انت بحاجـه الى صلاحيـات المشـرف لبـدء محادثـه صوتيـه ...**", time=20)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="انهاء مكالمه$",
     command=("انهاء مكالمه", plugin_category),
     info={
@@ -71,18 +71,18 @@ async def start_vc(event):
 )
 async def end_vc(event):
     "لـ انهـاء المحادثـه الصـوتيـه"
-    vc_chat = await zedub.get_entity(event.chat_id)
+    vc_chat = await l313l.get_entity(event.chat_id)
     gc_call = await chat_vc_checker(event, vc_chat)
     if not gc_call:
         return
     try:
-        await zedub(functions.phone.DiscardGroupCallRequest(call=gc_call))
+        await l313l(functions.phone.DiscardGroupCallRequest(call=gc_call))
         await edit_delete(event, "**- تم انهـاء المحـادثـه الصـوتيـه .. بنجـاح ✓**")
     except ChatAdminRequiredError:
         await edit_delete(event, "**- انت بحاجـه الى صلاحيـات المشـرف لـ انهـاء المحادثـه الصوتيـه ...**", time=20)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="دعوه ?(.*)?",
     command=("دعوه", plugin_category),
     info={
@@ -98,7 +98,7 @@ async def inv_vc(event):
     "لـ دعـوة اشخـاص للمكالمـه"
     users = event.pattern_match.group(1)
     reply = await event.get_reply_message()
-    vc_chat = await zedub.get_entity(event.chat_id)
+    vc_chat = await l313l.get_entity(event.chat_id)
     gc_call = await chat_vc_checker(event, vc_chat)
     if not gc_call:
         return
@@ -114,7 +114,7 @@ async def inv_vc(event):
         if isinstance(cc, User):
             user_list.append(cc)
     try:
-        await zedub(
+        await l313l(
             functions.phone.InviteToGroupCallRequest(call=gc_call, users=user_list)
         )
         await edit_delete(event, "**- تم اضافـة الاشخـاص الى المكالمـه .. بنجـاح ✓**")
@@ -122,7 +122,7 @@ async def inv_vc(event):
         return await edit_delete(event, "**- هـذا الشخـص منضـم مسبقـاً**", time=20)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="معلومات المكالمه",
     command=("معلومات المكالمه", plugin_category),
     info={
@@ -132,12 +132,12 @@ async def inv_vc(event):
 )
 async def info_vc(event):
     "لـ جلب معلومـات المحادثـه الصـوتيـه"
-    vc_chat = await zedub.get_entity(event.chat_id)
+    vc_chat = await zl313l.get_entity(event.chat_id)
     gc_call = await chat_vc_checker(event, vc_chat)
     if not gc_call:
         return
     await edit_or_reply(event, "**- جـارِ جلب معلومـات المحـادثه الصـوتيـه ...**")
-    call_details = await zedub(
+    call_details = await l313l(
         functions.phone.GetGroupCallRequest(call=gc_call, limit=1)
     )
     grp_call = "**معلومـات المحـادثـه الصـوتيـه**\n\n"
@@ -152,7 +152,7 @@ async def info_vc(event):
     await edit_or_reply(event, grp_call)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="عنوان?(.*)?",
     command=("عنوان", plugin_category),
     info={
@@ -164,17 +164,17 @@ async def info_vc(event):
 async def title_vc(event):
     "لـ تغييـر عنـوان المكالمـه"
     title = event.pattern_match.group(1)
-    vc_chat = await zedub.get_entity(event.chat_id)
+    vc_chat = await l313l.get_entity(event.chat_id)
     gc_call = await chat_vc_checker(event, vc_chat)
     if not gc_call:
         return
     if not title:
         return await edit_delete("What should i keep as title")
-    await zedub(functions.phone.EditGroupCallTitleRequest(call=gc_call, title=title))
+    await l313l(functions.phone.EditGroupCallTitleRequest(call=gc_call, title=title))
     await edit_delete(event, f"**- تم تغييـر عنـوان المكالمـه الـى {title} .. بنجـاح ✓**")
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="(|الغاء )اسكت ([\s\S]*)",
     command=("اسكت", plugin_category),
     info={
@@ -193,7 +193,7 @@ async def mute_vc(event):
     cmd = event.pattern_match.group(1)
     users = event.pattern_match.group(2)
     reply = await event.get_reply_message()
-    vc_chat = await zedub.get_entity(event.chat_id)
+    vc_chat = await l313l.get_entity(event.chat_id)
     gc_call = await chat_vc_checker(event, vc_chat)
     if not gc_call:
         return
@@ -221,7 +221,7 @@ async def mute_vc(event):
     await edit_delete(event, f"{check}d users in Group Call")
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     command=("الغاء اسكت", plugin_category),
     info={
         "header": "لـ الغـاء كتـم شخـص في المكالمـه",
