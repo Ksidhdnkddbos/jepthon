@@ -34,7 +34,7 @@ def get_cookies_file():
     return cookie_txt_file
 
 
-class ZedVC:
+class jepthonvc:
     def __init__(self, client) -> None:
         self.app = PyTgCalls(client, overload_quiet_mode=True)
         self.client = client
