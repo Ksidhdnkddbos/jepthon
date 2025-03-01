@@ -2,9 +2,9 @@ from datetime import datetime
 
 from telethon.utils import get_display_name
 
-from . import zedub
+from JoKeRUB import l313l
 from ..Config import Config
-from ..core.logger import logging
+from JoKeRUB.core.logger import logging
 from ..core import CMD_INFO, PLG_INFO
 from ..core.data import _sudousers_list, sudo_enabled_cmds
 from ..core.managers import edit_delete, edit_or_reply
@@ -13,11 +13,11 @@ from ..sql_helper import global_collectionjson as sql
 from ..sql_helper import global_list as sqllist
 from ..sql_helper.globals import addgvar, delgvar, gvarstatus
 
-plugin_category = "الادوات"
+plugin_category = "tools"
 
 LOGS = logging.getLogger(__name__)
-
-ZDEV = gvarstatus("sudoenable") or "true"
+ENV = bool(os.environ.get("ENV", False))
+JOKDEV = gvarstatus("sudoenable") or "true"
 
 ZelzalDV_cmd = (
     "[ᯓ 𝗦𝗢𝗨𝗥𝗖𝗘 𝗭𝗧𝗛𝗢𝗡 - اوامــر المطـور المســاعد](https://t.me/+LoO1LGVxdqM3NWZk) .\n\n"
@@ -71,7 +71,7 @@ def get_key(val):
     return None
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="وضع المطور (تفعيل|تعطيل)$",
     command=("وضع المطور", plugin_category),
     info={
@@ -95,7 +95,7 @@ async def chat_blacklist(event):
         return await edit_or_reply(event, "**⎉╎تـم تعطيـل وضـع المطــور المسـاعـد .. بنجــاح✓**\n**⎉╎يتم الان اعـادة تشغيـل بـوت زدثــون انتظـر  ▬▭ ...**")
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="رفع مطور(?:\s|$)([\s\S]*)",
     command=("رفع مطور", plugin_category),
     info={
@@ -142,7 +142,7 @@ async def add_sudo_user(event):
     await event.client.reload(msg)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="تنزيل مطور(?:\s|$)([\s\S]*)",
     command=("تنزيل مطور", plugin_category),
     info={
@@ -173,7 +173,7 @@ async def _(event):
     await event.client.reload(msg)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="المطورين$",
     command=("المطورين", plugin_category),
     info={
@@ -199,7 +199,7 @@ async def _(event):
     await edit_or_reply(event, result)
 
 
-@zedub.zed_cmd(pattern="حذف_المطورين")
+@l313l.ar_cmd(pattern="حذف_المطورين")
 async def _(event):
     await clear_sudo_list()
     output = f"**⎉╎تـم حـذف المطورين .. بنجـاح 🗑**\n"
@@ -207,7 +207,7 @@ async def _(event):
     msg = await edit_or_reply(event, output)
     await event.client.reload(msg)
 
-@zedub.zed_cmd(pattern="حذف المطورين")
+@l313l.ar_cmd(pattern="حذف المطورين")
 async def _(event):
     await clear_sudo_list()
     output = f"**⎉╎تـم حـذف المطورين .. بنجـاح 🗑**\n"
@@ -215,7 +215,7 @@ async def _(event):
     msg = await edit_or_reply(event, output)
     await event.client.reload(msg)
 
-@zedub.zed_cmd(pattern="مسح المطورين")
+@l313l.ar_cmd(pattern="مسح المطورين")
 async def _(event):
     await clear_sudo_list()
     output = f"**⎉╎تـم حـذف المطورين .. بنجـاح 🗑**\n"
@@ -223,7 +223,7 @@ async def _(event):
     msg = await edit_or_reply(event, output)
     await event.client.reload(msg)
 
-@zedub.zed_cmd(pattern="تنزيل المطورين")
+@l313l.ar_cmd(pattern="تنزيل المطورين")
 async def _(event):
     await clear_sudo_list()
     output = f"**⎉╎تـم حـذف المطورين .. بنجـاح 🗑**\n"
@@ -232,7 +232,7 @@ async def _(event):
     await event.client.reload(msg)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="تحكم(s)?(?:\s|$)([\s\S]*)",
     command=("تحكم", plugin_category),
     info={
@@ -263,21 +263,20 @@ async def _(event):  # sourcery no-metrics
         return
     input_str = input_str.split()
     if input_str[0] == "آمن":
-        zedevent = await edit_or_reply(event, "**⎉╎تـم تفعيـل التحكـم للمطـوريـن لـ الاوامـر الآمـنـه .. بنجـاح🧑🏻‍💻✅**")
+        catevent = await edit_or_reply(event, "**⎉╎تـم تفعيـل التحكـم للمطـوريـن لـ الاوامـر الآمـنـه .. بنجـاح🧑🏻‍💻✅**")
         totalcmds = CMD_INFO.keys()
         flagcmds = (
-            PLG_INFO["botcontrols"]
+            PLG_INFO["اوامر الكروب"]
             + PLG_INFO["الوقتي"]
-            + PLG_INFO["التحديث"]
-            + PLG_INFO["الاوامر"]
-            + PLG_INFO["هيروكو"]
+            + PLG_INFO["تحديث"]
+            + PLG_INFO["تفرعات الاوامر"]
+            + PLG_INFO["معلومات الحساب"]
+            + PLG_INFO["اغنية"]
             + PLG_INFO["الادمن"]
-            + PLG_INFO["الحمايه"]
-            + PLG_INFO["الاغاني"]
-            + PLG_INFO["المجموعه"]
-            + PLG_INFO["النظام"]
-            + PLG_INFO["الفارات"]
-            + PLG_INFO["المطور"]
+            + PLG_INFO["الاوامر"]
+            + PLG_INFO["الانتحال"]
+            + PLG_INFO["التحكم"]
+            + PLG_INFO["التكرار"]
             + ["gauth"]
             + ["greset"]
         )
@@ -285,14 +284,14 @@ async def _(event):  # sourcery no-metrics
         if len(sudocmds) > 0:
             sqllist.del_keyword_list("sudo_enabled_cmds")
     elif input_str[0] == "كامل" or input_str[0] == "الكل":
-        zedevent = await edit_or_reply(
+        catevent = await edit_or_reply(
             event, "**⎉╎تـم تفعيـل التحكـم الكـامـل للمطـوريـن لـ جميـع الاوامـر .. بنجـاح🧑🏻‍💻✅**"
         )
         loadcmds = CMD_INFO.keys()
         if len(sudocmds) > 0:
             sqllist.del_keyword_list("sudo_enabled_cmds")
     elif input_str[0] == "ملف":
-        zedevent = event
+        catevent = event
         input_str.remove("ملف")
         loadcmds = []
         for plugin in input_str:
@@ -303,7 +302,7 @@ async def _(event):  # sourcery no-metrics
             else:
                 loadcmds += PLG_INFO[plugin]
     else:
-        zedevent = event
+        catevent = event
         loadcmds = []
         for cmd in input_str:
             if cmd not in CMD_INFO:
@@ -324,7 +323,7 @@ async def _(event):  # sourcery no-metrics
     await event.client.reload(msg)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="ايقاف تحكم(s)?(?:\s|$)([\s\S]*)?",
     command=("ايقاف تحكم", plugin_category),
     info={
@@ -357,32 +356,31 @@ async def _(event):  # sourcery no-metrics
         )
     input_str = input_str.split()
     if input_str[0] == "كامل" or input_str[0] == "الكل":
-        zedevent = await edit_or_reply(
+        catevent = await edit_or_reply(
             event, "**⎉╎تـم تعطيـل التحكـم الكـامـل للمطـوريـن لـ جميـع الاوامـر .. بنجـاح🧑🏻‍💻✅**"
         )
         flagcmds = sudocmds
     elif input_str[0] == "آمن":
-        zedevent = await edit_or_reply(
+        catevent = await edit_or_reply(
             event, "**⎉╎تـم تعطيـل التحكـم للمطـوريـن لـ الاوامـر الآمـنـه .. بنجـاح🧑🏻‍💻✅**"
         )
         flagcmds = (
-            PLG_INFO["botcontrols"]
+            PLG_INFO["اوامر الكروب"]
             + PLG_INFO["الوقتي"]
-            + PLG_INFO["التحديث"]
-            + PLG_INFO["الاوامر"]
-            + PLG_INFO["هيروكو"]
+            + PLG_INFO["تحديث"]
+            + PLG_INFO["تفرعات الاوامر"]
+            + PLG_INFO["معلومات الحساب"]
+            + PLG_INFO["اغنية"]
             + PLG_INFO["الادمن"]
-            + PLG_INFO["الحمايه"]
-            + PLG_INFO["الاغاني"]
-            + PLG_INFO["المجموعه"]
-            + PLG_INFO["النظام"]
-            + PLG_INFO["الفارات"]
-            + PLG_INFO["المطور"]
+            + PLG_INFO["الاوامر"]
+            + PLG_INFO["الانتحال"]
+            + PLG_INFO["التحكم"]
+            + PLG_INFO["التكرار"]
             + ["gauth"]
             + ["greset"]
         )
     elif input_str[0] == "ملف":
-        zedevent = event
+        catevent = event
         input_str.remove("ملف")
         flagcmds = []
         for plugin in input_str:
@@ -393,7 +391,7 @@ async def _(event):  # sourcery no-metrics
             else:
                 flagcmds += PLG_INFO[plugin]
     else:
-        zedevent = event
+        catevent = event
         flagcmds = []
         for cmd in input_str:
             if cmd not in CMD_INFO:
@@ -417,7 +415,7 @@ async def _(event):  # sourcery no-metrics
     await event.client.reload(msg)
 
 
-@zedub.zed_cmd(
+@l313l.ar_cmd(
     pattern="التحكم( المعطل)?$",
     command=("التحكم", plugin_category),
     info={
@@ -483,12 +481,12 @@ async def _(event):  # sourcery no-metrics
     await edit_or_reply(event, finalstr, aslink=True, linktext=text)
 
 
-zedub.loop.create_task(_init())
+l313l.loop.create_task(_init())
 
 
 
 # Copyright (C) 2022 Zed-Thon . All Rights Reserved
-@zedub.zed_cmd(pattern="المساعد")
+@l313l.ar_cmd(pattern="المساعد")
 async def cmd(zelzallll):
     await edit_or_reply(zelzallll, ZelzalDV_cmd)
 
