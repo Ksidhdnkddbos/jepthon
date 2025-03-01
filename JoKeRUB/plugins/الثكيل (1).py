@@ -5,12 +5,11 @@ from JoKeRUB import l313l
 hussein_enabled = False
 aljoker_enabled = False
 JOKER_ID = {}
-
-# تفعيل أمر تفكيك الكلمة إلى حروفها
-@l313l.on(events.NewMessage(outgoing=True, pattern=r'^\.تفكيك (.*)'))
+# تعريف الأمرين: .تفكيك و .ت
+@l313l.on(events.NewMessage(outgoing=True, pattern=r'^[\.\/](تفكيك|ت) (.*)'))
 async def break_word(event):
     # الحصول على النص من الأمر
-    text = event.pattern_match.group(1)
+    text = event.pattern_match.group(2)
     
     # تفكيك النص إلى أحرف
     letters = ' '.join(list(text))
