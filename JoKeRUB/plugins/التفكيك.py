@@ -1,17 +1,20 @@
 import asyncio
 from telethon import events
 from telethon.tl.types import Message
-from JoKeRUB.core.managers import edit_or_reply
-from JoKeRUB.helpers.utils import _catutils
+from ..core.managers import edit_or_reply
+from ..helpers.utils import _catutils
 from ..config import config 
 from . import l313l
-
-# تعريف الوظيفة split_arabic
-def split_arabic(text):
-    return ' '.join(list(text))
+#كرار
+def split_arabic(input_text):
+    letters = []
+    for char in input_text:
+        if char.isalpha():
+            letters.append(char)
+    return ' '.join(letters)
 
 @l313l.ar_cmd(pattern=f"ت(?: |$)(.*)")
-async def break_word(event):
+async def handle_event(event):
     try:
         malath = event.pattern_match.group(1)
         if malath:
