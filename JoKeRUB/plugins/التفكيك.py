@@ -14,7 +14,7 @@ def split_arabic(input_text):
     return ' '.join(letters)
 
 @l313l.ar_cmd(pattern=f"ت(?: |$)(.*)")
-async def handle_event(event):
+async def break_word(event):
     try:
         malath = event.pattern_match.group(1)
         if malath:
