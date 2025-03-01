@@ -4,6 +4,7 @@ from telethon.tl.types import Message
 from JoKeRUB.core.managers import edit_or_reply
 from JoKeRUB.helpers.utils import _catutils
 from ..config import config 
+from . import l313l
 
 # تعريف الوظيفة split_arabic
 def split_arabic(text):
