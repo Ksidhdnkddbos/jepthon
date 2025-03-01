@@ -3,12 +3,13 @@ from telethon import events
 from telethon.tl.types import Message
 from JoKeRUB.core.managers import edit_or_reply
 from JoKeRUB.helpers.utils import _catutils
+from ..config import config 
 
 # تعريف الوظيفة split_arabic
 def split_arabic(text):
     return ' '.join(list(text))
 
-@l313l.on(events.NewMessage(pattern=f"ت(?: |$)(.*)"))
+@l313l.ar_cmd(pattern=f"ت(?: |$)(.*)")
 async def break_word(event):
     try:
         malath = event.pattern_match.group(1)
@@ -21,7 +22,7 @@ async def break_word(event):
         
         # استدعاء الوظيفة split_arabic
         split_message = split_arabic(karar)
-        await event.reply(split_message)  # الرد على الرسالة
-        await event.delete()  # حذف الرسالة الأصلية
+        await l313l.send_message(event.chat_id, split_message)
+        await event.delete()
     except Exception as e:
         print(f"حدث خطأ: {e}")
