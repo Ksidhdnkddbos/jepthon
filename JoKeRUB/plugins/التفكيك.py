@@ -4,7 +4,7 @@ from telethon.tl.types import Message
 from ..core.managers import edit_or_reply
 from ..helpers.utils import _catutils
 from ..config import config 
-from . import l313l
+from JoKeRUB import l313l
 #كرار
 def split_arabic(input_text):
     letters = []
