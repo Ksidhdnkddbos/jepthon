@@ -7,11 +7,19 @@ aljoker_enabled = False
 JOKER_ID = {}
 
 # تفعيل أمر تفكيك الكلمة إلى حروفها
-@l313l.on(events.NewMessage(outgoing=True, pattern=r'^\.تفكيك (\w+)$'))
+@l313l.on(events.NewMessage(outgoing=True, pattern=r'^\.تفكيك (.*)'))
 async def break_word(event):
-    word = event.pattern_match.group(1)
-    letters = ' '.join(list(word))
-    await event.edit(f'{letters}')
+    # الحصول على النص من الأمر
+    text = event.pattern_match.group(1)
+    
+    # تفكيك النص إلى أحرف
+    letters = ' '.join(list(text))
+    
+    # إرسال النص المفكوك كرسالة جديدة
+    await event.respond(letters)
+    
+    # حذف الرسالة الأصلية (اختياري)
+    await event.delete()
 
 @l313l.on(events.NewMessage(incoming=True, func=lambda e: e.is_private))
 async def mark_as_read(event):
