@@ -72,8 +72,8 @@ def get_key(val):
 
 
 @l313l.ar_cmd(
-    pattern="وضع المطور (تفعيل|تعطيل)$",
-    command=("وضع المطور", plugin_category),
+    pattern="امر المطور (تفعيل|تعطيل)$",
+    command=("امر المطور", plugin_category),
     info={
         "header": "لـ تفعيـل/تعطيـل وضـع المطــور وفتـح/قفـل التحكـم لـ المطــور",
         "الاستـخـدام": "{tr}وضع المطور تفعيل / تعطيل",
@@ -486,8 +486,5 @@ l313l.loop.create_task(_init())
 
 
 # Copyright (C) 2022 Zed-Thon . All Rights Reserved
-@l313l.ar_cmd(pattern="المساعد")
-async def cmd(zelzallll):
-    await edit_or_reply(zelzallll, ZelzalDV_cmd)
 
 
